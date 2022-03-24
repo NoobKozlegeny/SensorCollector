@@ -38,21 +38,24 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
-public class MainActivity extends AppCompatActivity implements SensorEventListener, AdapterView.OnItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     static final int CREATE_FILE_ACCELERO = 1;
     static final int CREATE_FILE_GYRO = 2;
 
     TextView acceleratorText;
-    SensorManager sensorManager;
-    Sensor acceleratorMeter;
-    Sensor gyroMeter;
     Timer timer;
     ArrayList<String> axisList;
     ArrayList<String> gyroList;
     PowerManager.WakeLock wakeLock;
     String selectedMode;
     Long timesTamp;
+
+    SensorManager sensorManager;
+    //Sensor acceleratorMeter;
+    //Sensor gyroMeter;
+    Gyroscope gyroscope;
+    Accelerometer accelerometer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,8 +93,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             wakeLock.acquire();
         }
 
-        acceleratorMeter = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        gyroMeter = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        //acceleratorMeter = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        //gyroMeter = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 
         //Running the data collecting for X minutes defined in the gatherLength textView, Throws Exception
         TextView time = findViewById(R.id.gatherLength);
@@ -141,8 +144,26 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     //Starts the sensor's data gathering
     protected void onResume() {
         super.onResume();
-        sensorManager.registerListener(this, acceleratorMeter, SensorManager.SENSOR_DELAY_NORMAL);
-        sensorManager.registerListener(this, gyroMeter, SensorManager.SENSOR_DELAY_NORMAL);
+
+        accelerometer = new Accelerometer(getApplicationContext());
+        accelerometer.setListener(new Accelerometer.Listener() {
+            @Override
+            public void onRotation(long timestamp, float tx, float ty, float ts) {
+                acceleratorText.setText(tx + "\n" + ty + "\n" + ts);
+            }
+        });
+        accelerometer.register();
+
+        gyroscope = new Gyroscope(getApplicationContext());
+        gyroscope.setListener(new Gyroscope.Listener() {
+            @Override
+            public void onRotation(long timestamp, float tx, float ty, float ts) {
+                acceleratorText.setText(tx + "\n" + ty + "\n" + ts);
+            }
+        });
+        gyroscope.register();
+        //sensorManager.registerListener(this, acceleratorMeter, SensorManager.SENSOR_DELAY_NORMAL);
+        //sensorManager.registerListener(this, gyroMeter, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     //Stops the sensor's data gathering
@@ -154,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         acceleratorText.setText("Finished data gathering");
     }
 
-    @Override
+/*    @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         String sensorName = sensorEvent.sensor.getName();
         TextView test = findViewById(R.id.test);
@@ -175,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
 
-    }
+    }*/
 
     private void createFile(String sensorName) {
         Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
@@ -199,7 +220,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                                  Intent resultData) {
         super.onActivityResult(requestCode, resultCode, resultData);
         if (resultCode == Activity.RESULT_OK) {
-            // The result data contains a URI for the document or directory that
+            if (requestCode == 1) {
+                accelerometer.ExportToCSV(resultData);
+            }
+            else {
+                gyroscope.ExportToCSV(resultData);
+            }
+            /*// The result data contains a URI for the document or directory that
             // the user selected.
             Uri uri = null;
             if (resultData != null) {
@@ -232,7 +259,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }
+            }*/
         }
     }
 
