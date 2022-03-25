@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     static final int CREATE_FILE_GYRO = 2;
 
     TextView acceleratorText;
+    TextView gyroText;
     Timer timer;
     ArrayList<String> axisList;
     ArrayList<String> gyroList;
@@ -63,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setContentView(R.layout.activity_main);
 
         acceleratorText = findViewById(R.id.acceleroData);
+        gyroText = findViewById(R.id.gyroData);
         sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         axisList = new ArrayList<>();
         gyroList = new ArrayList<>();
@@ -145,6 +147,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected void onResume() {
         super.onResume();
 
+        //Waits for 5 seconds to actually start.
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         accelerometer = new Accelerometer(getApplicationContext());
         accelerometer.setListener(new Accelerometer.Listener() {
             @Override
@@ -158,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         gyroscope.setListener(new Gyroscope.Listener() {
             @Override
             public void onRotation(long timestamp, float tx, float ty, float ts) {
-                acceleratorText.setText(tx + "\n" + ty + "\n" + ts);
+                gyroText.setText(tx + "\n" + ty + "\n" + ts);
             }
         });
         gyroscope.register();
