@@ -8,7 +8,6 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.net.Uri;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
@@ -16,10 +15,10 @@ import java.util.ArrayList;
 
 public class Accelerometer {
 
-    private Context context;
-    private SensorManager sensorManager;
-    private Sensor sensor;
-    private SensorEventListener sensorEventListener;
+    private final Context context;
+    private final SensorManager sensorManager;
+    private final Sensor sensor;
+    private final SensorEventListener sensorEventListener;
 
     public Long timesTamp;
     public ArrayList<String> accelerometerList;
@@ -55,13 +54,13 @@ public class Accelerometer {
             @Override
             public void onSensorChanged(SensorEvent sensorEvent) {
                 // check if listener is different from null
+                //sensorEvent.timestamp; This should go on the front of the file
+                //Ha többször elindítom a timestampet és ha jó időpontban akkor jó
                 if (listener != null) {
-                    String sensorName = sensorEvent.sensor.getName();
                     timesTamp = sensorEvent.timestamp;
 
                     accelerometerList.add(sensorEvent.values[0] + "," + sensorEvent.values[1] + "," + sensorEvent.values[2]);
 
-                    //   System.out.println(sensorEvent.timestamp+" Gyro"+sensorEvent.values[0]+" "+sensorEvent.values[1]+" "+sensorEvent.values[2]);
                     // pass the three floats in listener on rotation of axis
                     listener.onRotation(sensorEvent.timestamp,sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
                 }
@@ -93,9 +92,8 @@ public class Accelerometer {
     public void ExportToCSV(Intent resultData){
         // The result data contains a URI for the document or directory that
         // the user selected.
-        Uri uri = null;
         if (resultData != null) {
-            uri = resultData.getData();
+            Uri uri = resultData.getData();
             // Perform operations on the document using its URI.
 
             try {
@@ -111,8 +109,6 @@ public class Accelerometer {
                 }
 
                 outputStream.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
