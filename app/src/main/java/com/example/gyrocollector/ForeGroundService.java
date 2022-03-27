@@ -27,6 +27,7 @@ public class ForeGroundService extends Service {
 
     public Accelerometer accelerometer;
     public Gyroscope gyroscope;
+    public Sensors sensors;
     String datapath = "/message_path";
     public static String TAG = "WearListActivity";
     public static NotificationChannel CHANNEL = new NotificationChannel("proba","A neve", NotificationManager.IMPORTANCE_NONE);
@@ -36,6 +37,7 @@ public class ForeGroundService extends Service {
         super.onCreate();
         accelerometer = new Accelerometer(this);
         gyroscope = new Gyroscope(this);
+
         accelerometer.setListener(new Accelerometer.Listener() {
             //on translation method of accelerometer
             @Override
@@ -46,7 +48,7 @@ public class ForeGroundService extends Service {
             }
         });
 
-        // create a listener for gyroscope
+        //create a listener for gyroscope
         gyroscope.setListener(new Gyroscope.Listener() {
             // on rotation method of gyroscope
             @Override
@@ -72,23 +74,25 @@ public class ForeGroundService extends Service {
     public int onStartCommand(Intent intent,int flags,int stratId){
         accelerometer.register();
         gyroscope.register();
-        /*CHANNEL.setLightColor(Color.BLUE);
-        CHANNEL.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
-        NotificationManager service = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        service.createNotificationChannel(CHANNEL);
-        Intent notiintent = new Intent(this,MainActivity.class);
-        PendingIntent pendingIntent =
-                PendingIntent.getActivity(this, 0, notiintent, 0);
 
-        Notification notification =
-                new Notification.Builder(this, "proba")
-                        .setContentTitle("megy ugye")
-                        .setContentText("fut az alkalmazas")
-                        .setContentIntent(pendingIntent)
-                        .setTicker("proba")
-                        .build();
 
-        startForeground(101,notification);*/
+//        CHANNEL.setLightColor(Color.BLUE);
+//        CHANNEL.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+//        NotificationManager service = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//        service.createNotificationChannel(CHANNEL);
+//        Intent notiintent = new Intent(this,MainActivity.class);
+//        PendingIntent pendingIntent =
+//                PendingIntent.getActivity(this, 0, notiintent, 0);
+//
+//        Notification notification =
+//                new Notification.Builder(this, "proba")
+//                        .setContentTitle("megy ugye")
+//                        .setContentText("fut az alkalmazas")
+//                        .setContentIntent(pendingIntent)
+//                        .setTicker("proba")
+//                        .build();
+//
+//        startForeground(101,notification);
 
 
         return START_REDELIVER_INTENT;

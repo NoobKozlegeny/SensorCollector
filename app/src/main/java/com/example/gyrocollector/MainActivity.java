@@ -5,9 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -34,6 +38,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     static public Gyroscope gyroscope;
     static public Accelerometer accelerometer;
 
+    public ArrayList<String> accelerometerList;
+    public ArrayList<String> gyroList;
+
     Intent services;
 
     @Override
@@ -46,6 +53,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         gyroText = findViewById(R.id.gyroData);
         sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         selectedMode = "Slow";
+
+        gyroscope = new Gyroscope(this);
+        accelerometer = new Accelerometer(this);
+        accelerometerList = new ArrayList<>();
+        gyroList = new ArrayList<>();
 
         //Setting up DropDownMenu's items
         Spinner spinner = findViewById(R.id.sp_selectMode);
@@ -87,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 runOnUiThread(() -> {
                     stopService(services);
                     //wakeLock.release();
-                    //onPause();
+                    onPause();
                     createFile("ACCELEROMETER");
                     createFile("GYROSCOPE");
                 });
@@ -123,6 +135,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         timer.schedule(task, minutes);
 
     }
+
 
     //Clears axisList
     public void bt_clearAxisListOnClick(android.view.View avv){
