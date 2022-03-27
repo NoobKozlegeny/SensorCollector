@@ -42,9 +42,9 @@ public class Gyroscope {
     Gyroscope(Context context)
     {
         //Initializing the variables
+        this.context = context;
         sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-        this.context = context;
         gyroList = new ArrayList<>();
 
         //Initializing the sensorEventListener

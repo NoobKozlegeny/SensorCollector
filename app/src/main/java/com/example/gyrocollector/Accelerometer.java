@@ -27,7 +27,7 @@ public class Accelerometer {
     public interface Listener {
         // create method with all 3
         // axis translation as argument
-        void onRotation(long timestamp,float tx, float ty, float ts);
+        void onTranslation(long timestamp,float tx, float ty, float ts);
     }
 
     // create an instance
@@ -42,9 +42,9 @@ public class Accelerometer {
     Accelerometer(Context context)
     {
         //Initializing the variables
+        this.context = context;
         sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        this.context = context;
         accelerometerList = new ArrayList<>();
 
         //Initializing the sensorEventListener
@@ -62,7 +62,7 @@ public class Accelerometer {
                     accelerometerList.add(sensorEvent.values[0] + "," + sensorEvent.values[1] + "," + sensorEvent.values[2]);
 
                     // pass the three floats in listener on rotation of axis
-                    listener.onRotation(sensorEvent.timestamp,sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
+                    listener.onTranslation(sensorEvent.timestamp,sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
                 }
 
             }
