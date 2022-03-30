@@ -23,6 +23,8 @@ public class Gyroscope {
     public Long timesTamp;
     public ArrayList<String> gyroList;
 
+
+
     // create an interface with one method
     public interface Listener {
         // create method with all 3
@@ -57,12 +59,16 @@ public class Gyroscope {
                 //sensorEvent.timestamp; This should go on the front of the file
                 //Ha többször elindítom a timestampet és ha jó időpontban akkor jó
                 if (listener != null) {
-                    timesTamp = sensorEvent.timestamp;
+                    if (!(MainActivity.hasAccelero.equals(false) && MainActivity.hasGyro.equals(true))) {
+                        MainActivity.hasAccelero = false;
+                        MainActivity.hasGyro = true;
+                        timesTamp = sensorEvent.timestamp;
 
-                    gyroList.add(sensorEvent.values[0] + "," + sensorEvent.values[1] + "," + sensorEvent.values[2]);
+                        gyroList.add(sensorEvent.values[0] + "," + sensorEvent.values[1] + "," + sensorEvent.values[2]);
 
-                    // pass the three floats in listener on rotation of axis
-                    listener.onRotation(sensorEvent.timestamp,sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
+                        // pass the three floats in listener on rotation of axis
+                        listener.onRotation(sensorEvent.timestamp, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
+                    }
                 }
 
             }

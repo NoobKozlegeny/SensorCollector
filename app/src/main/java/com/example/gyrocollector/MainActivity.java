@@ -3,14 +3,9 @@ package com.example.gyrocollector;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.os.PowerManager;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -31,7 +26,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     TextView acceleratorText;
     TextView gyroText;
     Timer timer;
-    //PowerManager.WakeLock wakeLock;
     String selectedMode;
 
     SensorManager sensorManager;
@@ -41,7 +35,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public ArrayList<String> accelerometerList;
     public ArrayList<String> gyroList;
 
-    Intent services;
+    static public Boolean hasGyro = false;
+    static public Boolean hasAccelero = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,89 +62,80 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
 
-        //Creates wakelock which permits the CPU to work even when the screen is off
-        //Context mContext = getApplicationContext();
-        //PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        //wakeLock = powerManager.newWakeLock(PARTIAL_WAKE_LOCK,"app:wakelock");
-
-        //Foreground service kéne a wakelock helyett, vagy a képernyőt bekapcsolva hagyom textField módosításával, hogy ne kapcsoljon ki
-        //Starting the wakelock
-        //wakeLock.acquire();
+        //Keeps the screen on
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     //Starts the data gathering for X minutes
-    public void bt_gatherStartOnClick(android.view.View avv) throws InterruptedException{
-
+    public void bt_gatherStartOnClick(android.view.View avv) throws InterruptedException {
         //Running the data collecting for X minutes defined in the gatherLength textView, Throws Exception
         TextView time = findViewById(R.id.gatherLength);
-        String input = time.getText().toString();
-        long minutes = Long.parseLong(input) * 60000;
 
-        //Checking if the wakelock have been stopped to avoid Exception
-//        if (!wakeLock.isHeld()){
-//            wakeLock.acquire();
-//        }
+        //Checks if the time's text did get a number input
+        if (time.getText().toString().matches("\\d+(?:\\.\\d+)?")){
+            String input = time.getText().toString();
+            long minutes = Long.parseLong(input) * 60000;
+            //TimerTask which will create the file and stops the background data gathering
+            timer = new Timer("Timer");
+            TimerTask task = new TimerTask() {
+                @Override
+                public void run() {
+                    runOnUiThread(() -> {
+                        onPause();
+                        createFile("ACCELEROMETER");
+                        createFile("GYROSCOPE");
+                    });
+                }
+            };
+            //Sleeps for a bit to properly prepare for the data session
+            Thread.sleep(5000);
+            //Starts the sensor's data gathering
+            startGathering();
+            //Starts timer
+            timer.schedule(task, minutes);
+        }
+        else {
+            //Sleeps for a bit to properly prepare for the data session
+            Thread.sleep(5000);
+            //Starts the sensor's data gathering
+            startGathering();
+        }
+    }
 
-        //TimerTask which will create the file and stops the background data gathering
-        timer = new Timer("Timer");
-        TimerTask task = new TimerTask() {
-            @Override
-            public void run() {
-                runOnUiThread(() -> {
-                    stopService(services);
-                    //wakeLock.release();
-                    onPause();
-                    createFile("ACCELEROMETER");
-                    createFile("GYROSCOPE");
-                });
-            }
-        };
+    //Stops data gathering by clicking on the stop gathering button
+    public void bt_gatherStopOnClick(android.view.View avv) {
+        onPause();
+        createFile("ACCELEROMETER");
+        createFile("GYROSCOPE");
+    }
 
-
-
-        //Sleeps for a bit to properly prepare for the data session
-        Thread.sleep(5000);
-
-
-        //Starts the sensor's data gathering
-        services = new Intent(MainActivity.this, ForeGroundService.class);
-        startService(services);
-
-        /*accelerometer = new Accelerometer(this);
-        gyroscope = new Gyroscope(this);
-
+    //Initialises sensors and starts gathering
+    public void startGathering(){
         accelerometer.setListener((timestamp, tx, ty, ts) -> {
             acceleratorText.setText(tx + "\n" + ty + "\n" + ts);
-            acceleroList.add(tx + "," + ty + "," + ts);
+            accelerometerList.add(tx + "," + ty + "," + ts);
+            Log.d("Accelero", tx + "," + ty + "," + ts);
         });
         gyroscope.setListener((timestamp, tx, ty, ts) -> {
             gyroText.setText(tx + "\n" + ty + "\n" + ts);
             gyroList.add(tx + "," + ty + "," + ts);
+            Log.d("Gyro", tx + "," + ty + "," + ts);
         });
 
         accelerometer.register();
-        gyroscope.register();*/
-
-        //Starts timer
-        timer.schedule(task, minutes);
-
+        gyroscope.register();
     }
 
-
-    //Clears axisList
+    //Clears List
     public void bt_clearAxisListOnClick(android.view.View avv){
-        accelerometer.accelerometerList = new ArrayList<>();
-        gyroscope.gyroList = new ArrayList<>();
+        accelerometer.accelerometerList.clear();
+        gyroscope.gyroList.clear();
+        accelerometerList.clear();
+        gyroList.clear();
     }
 
-    //Starts the sensor's data gathering
     protected void onResume() {
         super.onResume();
-
-
-
-
     }
 
     @Override
@@ -161,8 +147,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected void onPause() {
         super.onPause();
 
-        //accelerometer.unRegister();
-        //gyroscope.unRegister();
+        accelerometer.unRegister();
+        gyroscope.unRegister();
 
         acceleratorText.setText("Finished data gathering");
     }

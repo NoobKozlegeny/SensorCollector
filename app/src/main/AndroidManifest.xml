@@ -4,8 +4,8 @@
 
     <uses-permission android:name="android.permission.HIGH_SAMPLING_RATE_SENSORS"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+<!--    <uses-permission android:name="android.permission.WAKE_LOCK"/>-->
+<!--    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>-->
 
     <application
         android:allowBackup="true"
@@ -23,7 +23,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".ForeGroundService"/>
+<!--        <service android:name=".ForeGroundService"/>-->
     </application>
 
 </manifest>

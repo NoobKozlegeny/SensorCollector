@@ -44,7 +44,7 @@ public class Accelerometer {
         //Initializing the variables
         this.context = context;
         sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         accelerometerList = new ArrayList<>();
 
         //Initializing the sensorEventListener
@@ -57,12 +57,16 @@ public class Accelerometer {
                 //sensorEvent.timestamp; This should go on the front of the file
                 //Ha többször elindítom a timestampet és ha jó időpontban akkor jó
                 if (listener != null) {
-                    timesTamp = sensorEvent.timestamp;
+                    if (!(MainActivity.hasGyro.equals(false) && MainActivity.hasAccelero.equals(true))) {
+                        MainActivity.hasAccelero = true;
+                        MainActivity.hasGyro = false;
+                        timesTamp = sensorEvent.timestamp;
 
-                    accelerometerList.add(sensorEvent.values[0] + "," + sensorEvent.values[1] + "," + sensorEvent.values[2]);
+                        accelerometerList.add(sensorEvent.values[0] + "," + sensorEvent.values[1] + "," + sensorEvent.values[2]);
 
-                    // pass the three floats in listener on rotation of axis
-                    listener.onTranslation(sensorEvent.timestamp,sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
+                        // pass the three floats in listener on rotation of axis
+                        listener.onTranslation(sensorEvent.timestamp, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
+                    }
                 }
 
             }
