@@ -55,7 +55,6 @@ public class Accelerometer {
             public void onSensorChanged(SensorEvent sensorEvent) {
                 // check if listener is different from null
                 //sensorEvent.timestamp; This should go on the front of the file
-                //Ha többször elindítom a timestampet és ha jó időpontban akkor jó
                 if (listener != null) {
                     if (!(MainActivity.hasGyro.equals(false) && MainActivity.hasAccelero.equals(true))) {
                         MainActivity.hasAccelero = true;

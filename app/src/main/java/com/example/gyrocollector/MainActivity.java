@@ -29,8 +29,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     String selectedMode;
 
     SensorManager sensorManager;
-    static public Gyroscope gyroscope;
-    static public Accelerometer accelerometer;
+    public Gyroscope gyroscope;
+    public Accelerometer accelerometer;
 
     public ArrayList<String> accelerometerList;
     public ArrayList<String> gyroList;
@@ -153,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         acceleratorText.setText("Finished data gathering");
     }
 
+    //Saves data to CSV file
     private void createFile(String sensorName) {
         Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -170,6 +171,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
+    //This activity will call the methods which will save the datas to a CSV
     @Override
     public void onActivityResult(int requestCode, int resultCode,
                                  Intent resultData) {
