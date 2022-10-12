@@ -3,8 +3,11 @@ package com.example.gyrocollector;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.hardware.SensorManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +17,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -22,7 +28,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     static final int CREATE_FILE_ACCELERO = 1;
     static final int CREATE_FILE_GYRO = 2;
+    static final int CREATE_FILE_ALL = 3;
 
+    TextView testText;
     TextView acceleratorText;
     TextView gyroText;
     Timer timer;
@@ -44,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         setContentView(R.layout.activity_main);
 
+        testText = findViewById(R.id.test);
         acceleratorText = findViewById(R.id.acceleroData);
         gyroText = findViewById(R.id.gyroData);
         sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
@@ -105,8 +114,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     //Stops data gathering by clicking on the stop gathering button
     public void bt_gatherStopOnClick(android.view.View avv) {
         onPause();
-        createFile("ACCELEROMETER");
-        createFile("GYROSCOPE");
+        createFile("ALL");
+//        createFile("ACCELEROMETER");
+//        createFile("GYROSCOPE");
     }
 
     //Initialises sensors and starts gathering
@@ -154,19 +164,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     //Saves data to CSV file
-    private void createFile(String sensorName) {
+    private void createFile(String name) {
         Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("text/csv");
-        String fileName = selectedMode + sensorName + java.time.LocalDate.now().toString().split("-")[1]
+        String fileName = selectedMode + name + java.time.LocalDate.now().toString().split("-")[1]
                 + java.time.LocalDate.now().toString().split("-")[2] + ".csv";
         intent.putExtra(Intent.EXTRA_TITLE, fileName);
 
-        if (sensorName.equals("ACCELEROMETER")){
+        if (name.equals("ACCELEROMETER")){
             startActivityForResult(intent, CREATE_FILE_ACCELERO);
         }
-        else {
+        else if (name.equals("GYROSCOPE")){
             startActivityForResult(intent, CREATE_FILE_GYRO);
+        }
+        else {
+            startActivityForResult(intent, CREATE_FILE_ALL);
         }
 
     }
@@ -180,8 +193,48 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             if (requestCode == 1) {
                 accelerometer.ExportToCSV(resultData);
             }
-            else {
+            else if (requestCode == 2) {
                 gyroscope.ExportToCSV(resultData);
+            }
+            else {
+                exportAllToOneCSV(resultData);
+            }
+        }
+    }
+
+    // This will export all the sensors data into one CSV
+    public void exportAllToOneCSV(Intent resultData){
+        ArrayList<String> combinedList = new ArrayList<>();
+
+        // Adding the header lines to the combinedList
+        combinedList.add(",Accelerometer,,,Gyroscope,,,GRAVITY");
+        combinedList.add("Timestamp: ," + accelerometer.timesTamp.toString());
+        combinedList.add("X_ACC,Y_ACC,Z_ACC,X_GYRO,Y_GYRO,Z_GYRO,X_GRAVITY,Y_GRAVITY,Z_GRAVITY");
+
+        // Combining the separate sensor datas into the combinedList
+        int i = 0;
+        while (i < accelerometerList.size() && i < gyroList.size()) {
+            combinedList.add(accelerometerList.get(i) + "," + gyroList.get(i));
+            i++;
+        }
+
+        // Exporting the combinedList to a CSV file
+        if (resultData != null) {
+            Uri uri = resultData.getData();
+            // Perform operations on the document using its URI.
+            try {
+                ContentResolver cr = getContentResolver();
+                OutputStream outputStream = cr.openOutputStream(uri);
+
+                for (String line : combinedList) {
+                    outputStream.write(line.getBytes(StandardCharsets.UTF_8));
+                    outputStream.write("\n".getBytes(StandardCharsets.UTF_8));
+                }
+
+                outputStream.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
