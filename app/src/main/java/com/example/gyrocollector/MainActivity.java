@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.hardware.SensorManager;
 import android.net.Uri;
@@ -20,6 +19,8 @@ import android.widget.TextView;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -38,18 +39,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     Timer timer;
     String selectedMode;
 
-    SensorManager sensorManager;
+    public SensorManager sensorManager;
     public Gyroscope gyroscope;
     public Accelerometer accelerometer;
     public Gravity gravity;
     public MagneticField magneticField;
     public GeoMagneticRotationVector geoMagneticRotationVector;
 
-    public ArrayList<String> accelerometerList;
-    public ArrayList<String> gyroList;
-    public ArrayList<String> gravityList;
-    public ArrayList<String> magneticFieldList;
-    public ArrayList<String> gmrvList;
+    public ArrayList<String> accelerometerList, gyroList, gravityList, magneticFieldList, gmrvList;
+//    public ArrayList<String> gyroList;
+//    public ArrayList<String> gravityList;
+//    public ArrayList<String> magneticFieldList;
+//    public ArrayList<String> gmrvList;
 
     static public Boolean hasGyro = false;
     static public Boolean hasAccelero = false;
@@ -71,11 +72,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         selectedMode = "Slow";
 
-        gyroscope = new Gyroscope(this);
-        accelerometer = new Accelerometer(this);
-        gravity = new Gravity(this);
-        magneticField = new MagneticField(this);
-        geoMagneticRotationVector = new GeoMagneticRotationVector(this);
+        gyroscope = new Gyroscope(this, sensorManager);
+        accelerometer = new Accelerometer(this, sensorManager);
+        gravity = new Gravity(this, sensorManager);
+        magneticField = new MagneticField(this, sensorManager);
+        geoMagneticRotationVector = new GeoMagneticRotationVector(this, sensorManager);
         accelerometerList = new ArrayList<>();
         gyroList = new ArrayList<>();
         gravityList = new ArrayList<>();
@@ -134,6 +135,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     //Stops data gathering by clicking on the stop gathering button
     public void bt_gatherStopOnClick(android.view.View avv) {
+        // Delete the last 50 lines of data bc we had to stop it manually
+
         onPause();
         createFile("ALL");
 //        createFile("ACCELEROMETER");
@@ -208,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         magneticField.unRegister();
         geoMagneticRotationVector.unRegister();
 
-        acceleratorText.setText("Finished data gathering");
+        testText.setText("Finished data gathering");
     }
 
     //Saves data to CSV file
@@ -257,14 +260,35 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         // Adding the header lines to the combinedList
         combinedList.add(",TYPE_LINEAR_ACCELERATION,,,TYPE_GYROSCOPE,,,TYPE_GRAVITY,,,TYPE_MAGNETIC_FIELD,,,TYPE_GEOMAGNETIC_ROTATION_VECTOR");
         combinedList.add("Timestamp: ," + accelerometer.timesTamp.toString());
-        combinedList.add("X_ACC,Y_ACC,Z_ACC,X_GYRO,Y_GYRO,Z_GYRO,X_GRAVITY,Y_GRAVITY,Z_GRAVITY,X_MF,Y_MF,Z_MF,X_GMRV,Y_GMRV,Z_GMRV");
+        combinedList.add("X_ACC,Y_ACC,Z_ACC,X_GYRO,Y_GYRO,Z_GYRO,X_GRAVITY,Y_GRAVITY,Z_GRAVITY,X_MF,Y_MF,Z_MF,X_GMRV,Y_GMRV,Z_GMRV,TIME,LABEL");
+
+        // Adding the first combined line to the combinedList bc of the time column
+        int i = 0;
+        LocalTime localTime = LocalTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        combinedList.add(accelerometerList.get(i) + "," + gyroList.get(i)
+                + "," + gravityList.get(i) + "," + magneticFieldList.get(i)
+                + "," + gmrvList.get(i) + "," + formatter.format(localTime)
+                + "," + selectedMode);
+        i++;
 
         // Combining the separate sensor datas into the combinedList
-        int i = 0;
         while (i < accelerometerList.size() && i < gyroList.size() && i < gravityList.size()
         && i < magneticFieldList.size() && i < gmrvList.size()) {
-            combinedList.add(accelerometerList.get(i) + "," + gyroList.get(i) + "," + gravityList.get(i)
-            + "," + magneticFieldList.get(i) + "," + gmrvList.get(i));
+            String lineToAdd = accelerometerList.get(i) + "," + gyroList.get(i)
+                    + "," + gravityList.get(i) + "," + magneticFieldList.get(i)
+                    + "," + gmrvList.get(i);
+
+            // Check if a minute have passed. If yes then the new time will be inserted
+            // into that specific column
+            if (localTime.getMinute() - LocalTime.now().getMinute() != 0) {
+                localTime = LocalTime.now();
+                combinedList.add(lineToAdd + "," + formatter.format(localTime)
+                        + "," + selectedMode);
+            }
+            else {
+                combinedList.add(lineToAdd + ",," + selectedMode);
+            }
             i++;
         }
 

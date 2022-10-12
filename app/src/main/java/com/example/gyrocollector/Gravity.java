@@ -39,11 +39,12 @@ public class Gravity {
     }
 
     //Constructor
-    Gravity(Context context)
+    Gravity(Context context, SensorManager sensorManager)
     {
         //Initializing the variables
         this.context = context;
-        sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        // sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        this.sensorManager = sensorManager;
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
         gravityList = new ArrayList<>();
 

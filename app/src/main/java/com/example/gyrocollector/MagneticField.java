@@ -39,12 +39,13 @@ public class MagneticField {
     }
 
     //Constructor
-    MagneticField(Context context)
+    MagneticField(Context context, SensorManager sensorManager)
     {
         //Initializing the variables
         this.context = context;
-        sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+        // sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        this.sensorManager = sensorManager;
+        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         magneticFieldList = new ArrayList<>();
 
         //Initializing the sensorEventListener

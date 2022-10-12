@@ -142,26 +142,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="100dp"
-        android:layout_marginTop="42dp"
-        android:layout_marginEnd="253dp"
+        android:layout_marginTop="24dp"
         android:layout_marginBottom="58dp"
         android:text="Gravity data"
         app:layout_constraintBottom_toTopOf="@+id/tv_selectMode"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.588"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/acceleroData"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/acceleroData" />
 
     <TextView
         android:id="@+id/magneticFieldData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="98dp"
-        android:layout_marginTop="41dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="97dp"
         android:text="Magnetic field data"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.556"
         app:layout_constraintStart_toEndOf="@+id/gravityData"
         app:layout_constraintTop_toBottomOf="@+id/gyroData" />
 

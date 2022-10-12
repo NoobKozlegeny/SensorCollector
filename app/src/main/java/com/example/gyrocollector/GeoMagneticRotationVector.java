@@ -39,12 +39,13 @@ public class GeoMagneticRotationVector {
     }
 
     //Constructor
-    GeoMagneticRotationVector(Context context)
+    GeoMagneticRotationVector(Context context, SensorManager sensorManager)
     {
         //Initializing the variables
         this.context = context;
-        sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+        // sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        this.sensorManager = sensorManager;
+        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR);
         gmrvList = new ArrayList<>();
 
         //Initializing the sensorEventListener

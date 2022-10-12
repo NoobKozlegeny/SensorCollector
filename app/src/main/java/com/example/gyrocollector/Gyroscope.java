@@ -41,11 +41,12 @@ public class Gyroscope {
     }
 
     //Constructor
-    Gyroscope(Context context)
+    Gyroscope(Context context, SensorManager sensorManager)
     {
         //Initializing the variables
         this.context = context;
-        sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        // sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        this.sensorManager = sensorManager;
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         gyroList = new ArrayList<>();
 
@@ -58,7 +59,8 @@ public class Gyroscope {
                 // check if listener is different from null
                 //sensorEvent.timestamp; This should go on the front of the file
                 if (listener != null) {
-                    if (!MainActivity.hasGyro.equals(true)) {
+                    // !(MainActivity.hasGyro.equals(true) && MainActivity.hasAccelero.equals(false)
+                    if (!(MainActivity.hasGyro.equals(true) && MainActivity.hasAccelero.equals(false))) {
                         MainActivity.hasAccelero = false;
                         MainActivity.hasMagnetic = false;
                         MainActivity.hasGeoMagneticRotation = false;

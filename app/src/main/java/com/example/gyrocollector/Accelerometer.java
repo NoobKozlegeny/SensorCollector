@@ -39,11 +39,12 @@ public class Accelerometer {
     }
 
     //Constructor
-    Accelerometer(Context context)
+    Accelerometer(Context context, SensorManager sensorManager)
     {
         //Initializing the variables
         this.context = context;
-        sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        // sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        this.sensorManager = sensorManager;
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         accelerometerList = new ArrayList<>();
 
@@ -56,7 +57,8 @@ public class Accelerometer {
                 // check if listener is different from null
                 //sensorEvent.timestamp; This should go on the front of the file
                 if (listener != null) {
-                    if (!MainActivity.hasAccelero.equals(true)) {
+                    // !(MainActivity.hasGyro.equals(false) && MainActivity.hasAccelero.equals(true))
+                    if (!(MainActivity.hasGyro.equals(false) && MainActivity.hasAccelero.equals(true))) {
                         MainActivity.hasAccelero = true;
                         MainActivity.hasMagnetic = false;
                         MainActivity.hasGeoMagneticRotation = false;
