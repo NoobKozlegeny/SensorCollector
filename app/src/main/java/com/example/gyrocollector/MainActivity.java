@@ -47,10 +47,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public GeoMagneticRotationVector geoMagneticRotationVector;
 
     public ArrayList<String> accelerometerList, gyroList, gravityList, magneticFieldList, gmrvList;
-//    public ArrayList<String> gyroList;
-//    public ArrayList<String> gravityList;
-//    public ArrayList<String> magneticFieldList;
-//    public ArrayList<String> gmrvList;
 
     static public Boolean hasGyro = false;
     static public Boolean hasAccelero = false;
@@ -180,11 +176,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     //Clears List
     public void bt_clearAxisListOnClick(android.view.View avv){
-        accelerometer.accelerometerList.clear();
-        gyroscope.gyroList.clear();
-        gravity.gravityList.clear();
-        magneticField.magneticFieldList.clear();
-        geoMagneticRotationVector.gmrvList.clear();
+        accelerometer.sensorList.clear();
+        gyroscope.sensorList.clear();
+        gravity.sensorList.clear();
+        magneticField.sensorList.clear();
+        geoMagneticRotationVector.sensorList.clear();
         accelerometerList.clear();
         gyroList.clear();
         gravityList.clear();
