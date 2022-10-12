@@ -281,7 +281,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             // Check if a minute have passed. If yes then the new time will be inserted
             // into that specific column
-            if (localTime.getMinute() - LocalTime.now().getMinute() != 0) {
+            int timeDifference = localTime.getMinute() - LocalTime.now().getMinute();
+            if (timeDifference != 0) {
                 localTime = LocalTime.now();
                 combinedList.add(lineToAdd + "," + formatter.format(localTime)
                         + "," + selectedMode);
