@@ -39,12 +39,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     SensorManager sensorManager;
     public Gyroscope gyroscope;
     public Accelerometer accelerometer;
+    public Gravity gravity;
 
     public ArrayList<String> accelerometerList;
     public ArrayList<String> gyroList;
+    public ArrayList<String> gravityList;
 
     static public Boolean hasGyro = false;
     static public Boolean hasAccelero = false;
+    static public Boolean hasGravity = false;
+    static public Boolean hasMagnetic = false;
+    static public Boolean hasGeoMagneticRotation = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +65,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         gyroscope = new Gyroscope(this);
         accelerometer = new Accelerometer(this);
+        gravity = new Gravity(this);
         accelerometerList = new ArrayList<>();
         gyroList = new ArrayList<>();
+        gravityList = new ArrayList<>();
 
         //Setting up DropDownMenu's items
         Spinner spinner = findViewById(R.id.sp_selectMode);
@@ -91,8 +98,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 public void run() {
                     runOnUiThread(() -> {
                         onPause();
-                        createFile("ACCELEROMETER");
-                        createFile("GYROSCOPE");
+                        createFile("ALL");
+//                        createFile("ACCELEROMETER");
+//                        createFile("GYROSCOPE");
                     });
                 }
             };
@@ -131,17 +139,24 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             gyroList.add(tx + "," + ty + "," + ts);
             Log.d("Gyro", tx + "," + ty + "," + ts);
         });
+        gravity.setListener((timestamp, tx, ty, ts) -> {
+            gravityList.add(tx + "," + ty + "," + ts);
+            Log.d("Gravity", tx + "," + ty + "," + ts);
+        });
 
         accelerometer.register();
         gyroscope.register();
+        gravity.register();
     }
 
     //Clears List
     public void bt_clearAxisListOnClick(android.view.View avv){
         accelerometer.accelerometerList.clear();
         gyroscope.gyroList.clear();
+        gravity.gravityList.clear();
         accelerometerList.clear();
         gyroList.clear();
+        gravityList.clear();
     }
 
     protected void onResume() {
@@ -159,6 +174,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         accelerometer.unRegister();
         gyroscope.unRegister();
+        gravity.unRegister();
 
         acceleratorText.setText("Finished data gathering");
     }
@@ -207,14 +223,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         ArrayList<String> combinedList = new ArrayList<>();
 
         // Adding the header lines to the combinedList
-        combinedList.add(",Accelerometer,,,Gyroscope,,,GRAVITY");
+        combinedList.add(",TYPE_LINEAR_ACCELERATION,,,TYPE_GYROSCOPE,,,TYPE_GRAVITY,,,TYPE_MAGNETIC_FIELD,,,TYPE_GEOMAGNETIC_ROTATION_VECTOR");
         combinedList.add("Timestamp: ," + accelerometer.timesTamp.toString());
-        combinedList.add("X_ACC,Y_ACC,Z_ACC,X_GYRO,Y_GYRO,Z_GYRO,X_GRAVITY,Y_GRAVITY,Z_GRAVITY");
+        combinedList.add("X_ACC,Y_ACC,Z_ACC,X_GYRO,Y_GYRO,Z_GYRO,X_GRAVITY,Y_GRAVITY,Z_GRAVITY,X_MF,Y_MF,Z_MF,X_GMRV,Y_GMRV,Z_GMRV");
 
         // Combining the separate sensor datas into the combinedList
         int i = 0;
-        while (i < accelerometerList.size() && i < gyroList.size()) {
-            combinedList.add(accelerometerList.get(i) + "," + gyroList.get(i));
+        while (i < accelerometerList.size() && i < gyroList.size() && i < gravityList.size()) {
+            combinedList.add(accelerometerList.get(i) + "," + gyroList.get(i) + "," + gravityList.get(i));
             i++;
         }
 

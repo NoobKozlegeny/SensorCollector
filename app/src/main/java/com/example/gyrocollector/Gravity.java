@@ -13,7 +13,7 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
-public class Accelerometer {
+public class Gravity {
 
     private final Context context;
     private final SensorManager sensorManager;
@@ -21,7 +21,7 @@ public class Accelerometer {
     private final SensorEventListener sensorEventListener;
 
     public Long timesTamp;
-    public ArrayList<String> accelerometerList;
+    public ArrayList<String> gravityList;
 
     // create an interface with one method
     public interface Listener {
@@ -31,21 +31,21 @@ public class Accelerometer {
     }
 
     // create an instance
-    private Accelerometer.Listener listener;
+    private Gravity.Listener listener;
 
     // method to set the instance
-    public void setListener(Accelerometer.Listener l) {
+    public void setListener(Gravity.Listener l) {
         listener = l;
     }
 
     //Constructor
-    Accelerometer(Context context)
+    Gravity(Context context)
     {
         //Initializing the variables
         this.context = context;
         sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-        accelerometerList = new ArrayList<>();
+        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+        gravityList = new ArrayList<>();
 
         //Initializing the sensorEventListener
         sensorEventListener = new SensorEventListener() {
@@ -56,16 +56,17 @@ public class Accelerometer {
                 // check if listener is different from null
                 //sensorEvent.timestamp; This should go on the front of the file
                 if (listener != null) {
-                    if (!MainActivity.hasAccelero.equals(true)) {
-                        MainActivity.hasAccelero = true;
+                    // !(MainActivity.hasGyro.equals(false) && MainActivity.hasAccelero.equals(true))
+                    if (!MainActivity.hasGravity.equals(true)) {
+                        MainActivity.hasAccelero = false;
                         MainActivity.hasMagnetic = false;
                         MainActivity.hasGeoMagneticRotation = false;
-                        MainActivity.hasGravity = false;
+                        MainActivity.hasGravity = true;
                         MainActivity.hasGyro = false;
 
                         timesTamp = sensorEvent.timestamp;
 
-                        accelerometerList.add(sensorEvent.values[0] + "," + sensorEvent.values[1] + "," + sensorEvent.values[2]);
+                        gravityList.add(sensorEvent.values[0] + "," + sensorEvent.values[1] + "," + sensorEvent.values[2]);
 
                         // pass the three floats in listener on rotation of axis
                         listener.onTranslation(sensorEvent.timestamp, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
@@ -110,7 +111,7 @@ public class Accelerometer {
                 //Timestamp
                 outputStream.write(("Timestamp: ," + timesTamp.toString() + "\n").getBytes(StandardCharsets.UTF_8));
 
-                for (String line : accelerometerList) {
+                for (String line : gravityList) {
                     outputStream.write(line.getBytes(StandardCharsets.UTF_8));
                     outputStream.write("\n".getBytes(StandardCharsets.UTF_8));
                 }

@@ -58,9 +58,13 @@ public class Gyroscope {
                 // check if listener is different from null
                 //sensorEvent.timestamp; This should go on the front of the file
                 if (listener != null) {
-                    if (!(MainActivity.hasAccelero.equals(false) && MainActivity.hasGyro.equals(true))) {
+                    if (!MainActivity.hasGyro.equals(true)) {
                         MainActivity.hasAccelero = false;
+                        MainActivity.hasMagnetic = false;
+                        MainActivity.hasGeoMagneticRotation = false;
+                        MainActivity.hasGravity = false;
                         MainActivity.hasGyro = true;
+
                         timesTamp = sensorEvent.timestamp;
 
                         gyroList.add(sensorEvent.values[0] + "," + sensorEvent.values[1] + "," + sensorEvent.values[2]);
