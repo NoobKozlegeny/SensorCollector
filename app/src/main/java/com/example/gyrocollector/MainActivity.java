@@ -33,6 +33,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     TextView testText;
     TextView acceleratorText;
     TextView gyroText;
+    TextView gravityText;
+    TextView magneticFieldText;
     Timer timer;
     String selectedMode;
 
@@ -40,10 +42,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public Gyroscope gyroscope;
     public Accelerometer accelerometer;
     public Gravity gravity;
+    public MagneticField magneticField;
+    public GeoMagneticRotationVector geoMagneticRotationVector;
 
     public ArrayList<String> accelerometerList;
     public ArrayList<String> gyroList;
     public ArrayList<String> gravityList;
+    public ArrayList<String> magneticFieldList;
+    public ArrayList<String> gmrvList;
 
     static public Boolean hasGyro = false;
     static public Boolean hasAccelero = false;
@@ -60,15 +66,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         testText = findViewById(R.id.test);
         acceleratorText = findViewById(R.id.acceleroData);
         gyroText = findViewById(R.id.gyroData);
+        gravityText = findViewById(R.id.gravityData);
+        magneticFieldText = findViewById(R.id.magneticFieldData);
         sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         selectedMode = "Slow";
 
         gyroscope = new Gyroscope(this);
         accelerometer = new Accelerometer(this);
         gravity = new Gravity(this);
+        magneticField = new MagneticField(this);
+        geoMagneticRotationVector = new GeoMagneticRotationVector(this);
         accelerometerList = new ArrayList<>();
         gyroList = new ArrayList<>();
         gravityList = new ArrayList<>();
+        magneticFieldList = new ArrayList<>();
+        gmrvList = new ArrayList<>();
+
 
         //Setting up DropDownMenu's items
         Spinner spinner = findViewById(R.id.sp_selectMode);
@@ -132,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         accelerometer.setListener((timestamp, tx, ty, ts) -> {
             acceleratorText.setText(tx + "\n" + ty + "\n" + ts);
             accelerometerList.add(tx + "," + ty + "," + ts);
-            Log.d("Accelero", tx + "," + ty + "," + ts);
+            Log.d("Accelerometer", tx + "," + ty + "," + ts);
         });
         gyroscope.setListener((timestamp, tx, ty, ts) -> {
             gyroText.setText(tx + "\n" + ty + "\n" + ts);
@@ -140,13 +153,26 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             Log.d("Gyro", tx + "," + ty + "," + ts);
         });
         gravity.setListener((timestamp, tx, ty, ts) -> {
+            gravityText.setText(tx + "\n" + ty + "\n" + ts);
             gravityList.add(tx + "," + ty + "," + ts);
             Log.d("Gravity", tx + "," + ty + "," + ts);
+        });
+        magneticField.setListener((timestamp, tx, ty, ts) -> {
+            magneticFieldText.setText(tx + "\n" + ty + "\n" + ts);
+            magneticFieldList.add(tx + "," + ty + "," + ts);
+            Log.d("Magnetic", tx + "," + ty + "," + ts);
+        });
+        geoMagneticRotationVector.setListener((timestamp, tx, ty, ts) -> {
+            // acceleratorText.setText(tx + "\n" + ty + "\n" + ts);
+            gmrvList.add(tx + "," + ty + "," + ts);
+            Log.d("GeoMagneticRotation", tx + "," + ty + "," + ts);
         });
 
         accelerometer.register();
         gyroscope.register();
         gravity.register();
+        magneticField.register();
+        geoMagneticRotationVector.register();
     }
 
     //Clears List
@@ -154,9 +180,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         accelerometer.accelerometerList.clear();
         gyroscope.gyroList.clear();
         gravity.gravityList.clear();
+        magneticField.magneticFieldList.clear();
+        geoMagneticRotationVector.gmrvList.clear();
         accelerometerList.clear();
         gyroList.clear();
         gravityList.clear();
+        magneticFieldList.clear();
+        gmrvList.clear();
     }
 
     protected void onResume() {
@@ -175,6 +205,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         accelerometer.unRegister();
         gyroscope.unRegister();
         gravity.unRegister();
+        magneticField.unRegister();
+        geoMagneticRotationVector.unRegister();
 
         acceleratorText.setText("Finished data gathering");
     }
@@ -229,8 +261,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         // Combining the separate sensor datas into the combinedList
         int i = 0;
-        while (i < accelerometerList.size() && i < gyroList.size() && i < gravityList.size()) {
-            combinedList.add(accelerometerList.get(i) + "," + gyroList.get(i) + "," + gravityList.get(i));
+        while (i < accelerometerList.size() && i < gyroList.size() && i < gravityList.size()
+        && i < magneticFieldList.size() && i < gmrvList.size()) {
+            combinedList.add(accelerometerList.get(i) + "," + gyroList.get(i) + "," + gravityList.get(i)
+            + "," + magneticFieldList.get(i) + "," + gmrvList.get(i));
             i++;
         }
 

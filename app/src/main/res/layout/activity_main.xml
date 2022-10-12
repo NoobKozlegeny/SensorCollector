@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="200dp"
         android:onClick="bt_clearAxisListOnClick"
-        android:text="Clear AxisList"
+        android:text="Clear collected datas"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.493"
@@ -54,14 +54,14 @@
         android:layout_marginStart="118dp"
         android:layout_marginEnd="118dp"
         android:layout_marginBottom="116dp"
-        android:text="A simple gyro data collector"
+        android:text="A simple sensor data collector"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintBottom_toTopOf="@+id/gatherLength"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.505"
+        app:layout_constraintHorizontal_bias="0.504"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.56" />
+        app:layout_constraintVertical_bias="0.336" />
 
     <TextView
         android:id="@+id/acceleroData"
@@ -70,10 +70,10 @@
         android:text="Accelerometer data"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.239"
+        app:layout_constraintHorizontal_bias="0.25"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.227" />
+        app:layout_constraintVertical_bias="0.168" />
 
     <TextView
         android:id="@+id/gyroData"
@@ -82,10 +82,10 @@
         android:text="Gyroscope data"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.782"
+        app:layout_constraintHorizontal_bias="0.756"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.227" />
+        app:layout_constraintVertical_bias="0.168" />
 
     <TextView
         android:id="@+id/tv_selectMode"
@@ -129,12 +129,41 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="156dp"
         android:layout_marginEnd="161dp"
-        android:layout_marginBottom="146dp"
+        android:layout_marginBottom="140dp"
         android:onClick="bt_gatherStopOnClick"
         android:text="Stop Gathering"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.472"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/gravityData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="42dp"
+        android:layout_marginEnd="253dp"
+        android:layout_marginBottom="58dp"
+        android:text="Gravity data"
+        app:layout_constraintBottom_toTopOf="@+id/tv_selectMode"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.588"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/acceleroData"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/magneticFieldData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="98dp"
+        android:layout_marginTop="41dp"
+        android:layout_marginEnd="97dp"
+        android:text="Magnetic field data"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/gravityData"
+        app:layout_constraintTop_toBottomOf="@+id/gyroData" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -21,7 +21,7 @@ public class GeoMagneticRotationVector {
     private final SensorEventListener sensorEventListener;
 
     public Long timesTamp;
-    public ArrayList<String> gravityList;
+    public ArrayList<String> gmrvList;
 
     // create an interface with one method
     public interface Listener {
@@ -45,7 +45,7 @@ public class GeoMagneticRotationVector {
         this.context = context;
         sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
-        gravityList = new ArrayList<>();
+        gmrvList = new ArrayList<>();
 
         //Initializing the sensorEventListener
         sensorEventListener = new SensorEventListener() {
@@ -57,16 +57,16 @@ public class GeoMagneticRotationVector {
                 //sensorEvent.timestamp; This should go on the front of the file
                 if (listener != null) {
                     // !(MainActivity.hasGyro.equals(false) && MainActivity.hasAccelero.equals(true))
-                    if (!MainActivity.hasGravity.equals(true)) {
+                    if (!MainActivity.hasGeoMagneticRotation.equals(true)) {
                         MainActivity.hasAccelero = false;
                         MainActivity.hasMagnetic = false;
-                        MainActivity.hasGeoMagneticRotation = false;
-                        MainActivity.hasGravity = true;
+                        MainActivity.hasGeoMagneticRotation = true;
+                        MainActivity.hasGravity = false;
                         MainActivity.hasGyro = false;
 
                         timesTamp = sensorEvent.timestamp;
 
-                        gravityList.add(sensorEvent.values[0] + "," + sensorEvent.values[1] + "," + sensorEvent.values[2]);
+                        gmrvList.add(sensorEvent.values[0] + "," + sensorEvent.values[1] + "," + sensorEvent.values[2]);
 
                         // pass the three floats in listener on rotation of axis
                         listener.onTranslation(sensorEvent.timestamp, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
@@ -111,7 +111,7 @@ public class GeoMagneticRotationVector {
                 //Timestamp
                 outputStream.write(("Timestamp: ," + timesTamp.toString() + "\n").getBytes(StandardCharsets.UTF_8));
 
-                for (String line : gravityList) {
+                for (String line : gmrvList) {
                     outputStream.write(line.getBytes(StandardCharsets.UTF_8));
                     outputStream.write("\n".getBytes(StandardCharsets.UTF_8));
                 }
