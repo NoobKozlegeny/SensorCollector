@@ -27,7 +27,11 @@ public class Gyroscope extends BaseSensor{
                 //sensorEvent.timestamp; This should go on the front of the file
                 if (listener != null) {
                     // !(MainActivity.hasGyro.equals(true) && MainActivity.hasAccelero.equals(false)
-                    if (!(MainActivity.hasGyro.equals(true) && MainActivity.hasAccelero.equals(false))) {
+                    if (!(MainActivity.hasAccelero.equals(false)
+                            && MainActivity.hasMagnetic.equals(false)
+                            && MainActivity.hasGeoMagneticRotation.equals(false)
+                            && MainActivity.hasGravity.equals(false)
+                            && MainActivity.hasGyro.equals(true))) {
                         MainActivity.hasAccelero = false;
                         MainActivity.hasMagnetic = false;
                         MainActivity.hasGeoMagneticRotation = false;

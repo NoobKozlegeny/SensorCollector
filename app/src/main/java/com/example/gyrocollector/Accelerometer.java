@@ -26,7 +26,11 @@ public class Accelerometer extends BaseSensor{
                 //sensorEvent.timestamp; This should go on the front of the file
                 if (listener != null) {
                     // !(MainActivity.hasGyro.equals(false) && MainActivity.hasAccelero.equals(true))
-                    if (!(MainActivity.hasGyro.equals(false) && MainActivity.hasAccelero.equals(true))) {
+                    if (!(MainActivity.hasAccelero.equals(true)
+                            && MainActivity.hasMagnetic.equals(false)
+                            && MainActivity.hasGeoMagneticRotation.equals(false)
+                            && MainActivity.hasGravity.equals(false)
+                            && MainActivity.hasGyro.equals(false))) {
                         MainActivity.hasAccelero = true;
                         MainActivity.hasMagnetic = false;
                         MainActivity.hasGeoMagneticRotation = false;

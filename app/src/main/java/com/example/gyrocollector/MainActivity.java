@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     TextView gravityText;
     TextView magneticFieldText;
     Timer timer;
+    LocalTime localTime;
     String selectedMode;
 
     public SensorManager sensorManager;
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public GeoMagneticRotationVector geoMagneticRotationVector;
 
     public ArrayList<String> accelerometerList, gyroList, gravityList, magneticFieldList, gmrvList;
+    public ArrayList<String> timeList;
 
     static public Boolean hasGyro = false;
     static public Boolean hasAccelero = false;
@@ -78,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         gravityList = new ArrayList<>();
         magneticFieldList = new ArrayList<>();
         gmrvList = new ArrayList<>();
+        timeList = new ArrayList<>();
 
 
         //Setting up DropDownMenu's items
@@ -141,10 +144,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     //Initialises sensors and starts gathering
     public void startGathering(){
+        localTime = LocalTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        timeList.add(formatter.format(localTime));
+
         accelerometer.setListener((timestamp, tx, ty, ts) -> {
             acceleratorText.setText(tx + "\n" + ty + "\n" + ts);
             accelerometerList.add(tx + "," + ty + "," + ts);
             Log.d("Accelerometer", tx + "," + ty + "," + ts);
+
+            // Spaghetti code but I need to add data to the timeList somehow
+            fillTimeList(formatter);
         });
         gyroscope.setListener((timestamp, tx, ty, ts) -> {
             gyroText.setText(tx + "\n" + ty + "\n" + ts);
@@ -172,6 +182,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         gravity.register();
         magneticField.register();
         geoMagneticRotationVector.register();
+    }
+
+    public void fillTimeList(DateTimeFormatter formatter) {
+        // Check if a minute have passed. If yes then the new time will be added to the list.
+        // Otherwise a placeholder text will be added in place
+        int timeDifference = localTime.getMinute() - LocalTime.now().getMinute();
+        if (timeDifference != 0) {
+            localTime = LocalTime.now();
+            timeList.add(formatter.format(localTime));
+        }
+        else { timeList.add("-"); }
     }
 
     //Clears List
@@ -260,12 +281,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         // Adding the first combined line to the combinedList bc of the time column
         int i = 0;
-        LocalTime localTime = LocalTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         combinedList.add(accelerometerList.get(i) + "," + gyroList.get(i)
                 + "," + gravityList.get(i) + "," + magneticFieldList.get(i)
-                + "," + gmrvList.get(i) + "," + formatter.format(localTime)
-                + "," + selectedMode);
+                + "," + gmrvList.get(i) + "," + timeList.get(i) + "," + selectedMode);
         i++;
 
         // Combining the separate sensor datas into the combinedList
@@ -273,19 +291,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         && i < magneticFieldList.size() && i < gmrvList.size()) {
             String lineToAdd = accelerometerList.get(i) + "," + gyroList.get(i)
                     + "," + gravityList.get(i) + "," + magneticFieldList.get(i)
-                    + "," + gmrvList.get(i);
-
-            // Check if a minute have passed. If yes then the new time will be inserted
-            // into that specific column
-            int timeDifference = localTime.getMinute() - LocalTime.now().getMinute();
-            if (timeDifference != 0) {
-                localTime = LocalTime.now();
-                combinedList.add(lineToAdd + "," + formatter.format(localTime)
-                        + "," + selectedMode);
-            }
-            else {
-                combinedList.add(lineToAdd + ",," + selectedMode);
-            }
+                    + "," + gmrvList.get(i) + "," + timeList.get(i) + "," + selectedMode;
+            combinedList.add(lineToAdd);
             i++;
         }
 
