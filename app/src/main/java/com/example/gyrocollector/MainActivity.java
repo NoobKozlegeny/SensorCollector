@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -148,34 +150,44 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         timeList.add(formatter.format(localTime));
 
-        accelerometer.setListener((timestamp, tx, ty, ts) -> {
-            acceleratorText.setText(tx + "\n" + ty + "\n" + ts);
-            accelerometerList.add(tx + "," + ty + "," + ts);
-            Log.d("Accelerometer", tx + "," + ty + "," + ts);
+        if (sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION) != null) {
+            accelerometer.setListener((timestamp, tx, ty, ts) -> {
+                acceleratorText.setText(tx + "\n" + ty + "\n" + ts);
+                accelerometerList.add(tx + "," + ty + "," + ts);
+                Log.d("Accelerometer", tx + "," + ty + "," + ts);
 
-            // Spaghetti code but I need to add data to the timeList somehow
-            fillTimeList(formatter);
-        });
-        gyroscope.setListener((timestamp, tx, ty, ts) -> {
-            gyroText.setText(tx + "\n" + ty + "\n" + ts);
-            gyroList.add(tx + "," + ty + "," + ts);
-            Log.d("Gyro", tx + "," + ty + "," + ts);
-        });
-        gravity.setListener((timestamp, tx, ty, ts) -> {
-            gravityText.setText(tx + "\n" + ty + "\n" + ts);
-            gravityList.add(tx + "," + ty + "," + ts);
-            Log.d("Gravity", tx + "," + ty + "," + ts);
-        });
-        magneticField.setListener((timestamp, tx, ty, ts) -> {
-            magneticFieldText.setText(tx + "\n" + ty + "\n" + ts);
-            magneticFieldList.add(tx + "," + ty + "," + ts);
-            Log.d("Magnetic", tx + "," + ty + "," + ts);
-        });
-        geoMagneticRotationVector.setListener((timestamp, tx, ty, ts) -> {
-            // acceleratorText.setText(tx + "\n" + ty + "\n" + ts);
-            gmrvList.add(tx + "," + ty + "," + ts);
-            Log.d("GeoMagneticRotation", tx + "," + ty + "," + ts);
-        });
+                // Spaghetti code but I need to add data to the timeList somehow
+                fillTimeList(formatter);
+            });
+        }
+        if (sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null) {
+            gyroscope.setListener((timestamp, tx, ty, ts) -> {
+                gyroText.setText(tx + "\n" + ty + "\n" + ts);
+                gyroList.add(tx + "," + ty + "," + ts);
+                Log.d("Gyro", tx + "," + ty + "," + ts);
+            });
+        }
+        if (sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY) != null) {
+            gravity.setListener((timestamp, tx, ty, ts) -> {
+                gravityText.setText(tx + "\n" + ty + "\n" + ts);
+                gravityList.add(tx + "," + ty + "," + ts);
+                Log.d("Gravity", tx + "," + ty + "," + ts);
+            });
+        }
+        if (sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION) != null) {
+            magneticField.setListener((timestamp, tx, ty, ts) -> {
+                magneticFieldText.setText(tx + "\n" + ty + "\n" + ts);
+                magneticFieldList.add(tx + "," + ty + "," + ts);
+                Log.d("Magnetic", tx + "," + ty + "," + ts);
+            });
+        }
+        if (sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION) != null) {
+            geoMagneticRotationVector.setListener((timestamp, tx, ty, ts) -> {
+                // acceleratorText.setText(tx + "\n" + ty + "\n" + ts);
+                gmrvList.add(tx + "," + ty + "," + ts);
+                Log.d("GeoMagneticRotation", tx + "," + ty + "," + ts);
+            });
+        }
 
         accelerometer.register();
         gyroscope.register();
