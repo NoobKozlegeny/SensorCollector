@@ -138,33 +138,26 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/gravityData"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="122dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="58dp"
-        android:text="Gravity data"
-        app:layout_constraintBottom_toTopOf="@+id/tv_selectMode"
-        app:layout_constraintEnd_toStartOf="@+id/magneticFieldData"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/acceleroData" />
-
-    <TextView
         android:id="@+id/magneticFieldData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="97dp"
-        android:layout_marginBottom="68dp"
-        android:text="Magnetic field data"
+        android:layout_marginEnd="92dp"
+        android:text="TextView"
         app:layout_constraintBottom_toTopOf="@+id/tv_selectMode"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.556"
-        app:layout_constraintStart_toEndOf="@+id/gravityData"
-        app:layout_constraintTop_toBottomOf="@+id/gyroData" />
+        app:layout_constraintTop_toBottomOf="@+id/gyroData"
+        app:layout_constraintVertical_bias="0.4" />
+
+    <TextView
+        android:id="@+id/gravityData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="100dp"
+        android:text="TextView"
+        app:layout_constraintBottom_toTopOf="@+id/tv_selectMode"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/acceleroData"
+        app:layout_constraintVertical_bias="0.4" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
