@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     //Initialises sensors and starts gathering
     public void startGathering(){
         localTime = LocalTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
         timeList.add(formatter.format(localTime));
 
         if (sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION) != null) {
@@ -201,12 +201,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void fillTimeList(DateTimeFormatter formatter) {
         // Check if a minute have passed. If yes then the new time will be added to the list.
         // Otherwise a placeholder text will be added in place
-        int timeDifference = localTime.getMinute() - LocalTime.now().getMinute();
-        if (timeDifference != 0) {
-            localTime = LocalTime.now();
-            timeList.add(formatter.format(localTime));
-        }
-        else { timeList.add("-"); }
+        localTime = LocalTime.now();
+        timeList.add(formatter.format(localTime));
     }
 
     //Clears List
@@ -385,7 +381,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         // Removing the last X lines from combinedList
         i = combinedList.size() - 1;
-        int newLength = (int)((combinedList.size() - 1) * 0.98);
+        int newLength = (int)((combinedList.size() - 1 - 20) * 0.98);
         while (i > newLength) {
             combinedList.remove(i);
             i--;
