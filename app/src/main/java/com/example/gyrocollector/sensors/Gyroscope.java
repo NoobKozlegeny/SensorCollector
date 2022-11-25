@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class Gyroscope extends BaseSensor{
 
     //Constructor
-    Gyroscope(Context context, SensorManager sensorManager)
+    public Gyroscope(Context context, SensorManager sensorManager)
     {
         //Initializing the variables
         this.context = context;

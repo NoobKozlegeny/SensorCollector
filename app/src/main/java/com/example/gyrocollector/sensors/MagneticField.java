@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class MagneticField extends BaseSensor {
 
     //Constructor
-    MagneticField(Context context, SensorManager sensorManager)
+    public MagneticField(Context context, SensorManager sensorManager)
     {
         //Initializing the variables
         this.context = context;

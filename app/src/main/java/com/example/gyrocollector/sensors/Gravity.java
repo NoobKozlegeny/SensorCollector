@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class Gravity extends BaseSensor{
 
     //Constructor
-    Gravity(Context context, SensorManager sensorManager)
+    public Gravity(Context context, SensorManager sensorManager)
     {
         //Initializing the variables
         this.context = context;

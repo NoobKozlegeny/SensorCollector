@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class GeoMagneticRotationVector extends BaseSensor{
     //Constructor
-    GeoMagneticRotationVector(Context context, SensorManager sensorManager)
+    public GeoMagneticRotationVector(Context context, SensorManager sensorManager)
     {
         //Initializing the variables
         this.context = context;

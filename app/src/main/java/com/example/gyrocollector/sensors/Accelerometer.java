@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class Accelerometer extends BaseSensor{
     //Constructor
-    Accelerometer(Context context, SensorManager sensorManager)
+    public Accelerometer(Context context, SensorManager sensorManager)
     {
         //Initializing the variables
         this.context = context;
