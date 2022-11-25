@@ -1,20 +1,24 @@
-package com.example.gyrocollector;
+package com.example.gyrocollector.sensors;
 
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+
+import com.example.gyrocollector.MainActivity;
+
 import java.util.ArrayList;
 
-public class GeoMagneticRotationVector extends BaseSensor{
+public class MagneticField extends BaseSensor {
+
     //Constructor
-    GeoMagneticRotationVector(Context context, SensorManager sensorManager)
+    MagneticField(Context context, SensorManager sensorManager)
     {
         //Initializing the variables
         this.context = context;
         this.sensorManager = sensorManager;
-        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR);
+        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         sensorList = new ArrayList<>();
 
         //Initializing the sensorEventListener
@@ -25,16 +29,15 @@ public class GeoMagneticRotationVector extends BaseSensor{
                 // check if listener is different from null
                 //sensorEvent.timestamp; This should go on the front of the file
                 if (listener != null) {
-                    // !(MainActivity.hasGyro.equals(false) && MainActivity.hasAccelero.equals(true))
-                    // !MainActivity.hasGeoMagneticRotation.equals(true)
+                    // !(MainActivity.hasGyro.equals(false) && MainActivity.hasMagnetic.equals(true))
                     if (!(MainActivity.hasAccelero.equals(false)
-                            && MainActivity.hasMagnetic.equals(false)
-                            && MainActivity.hasGeoMagneticRotation.equals(true)
+                            && MainActivity.hasMagnetic.equals(true)
+                            && MainActivity.hasGeoMagneticRotation.equals(false)
                             && MainActivity.hasGravity.equals(false)
                             && MainActivity.hasGyro.equals(false))) {
                         MainActivity.hasAccelero = false;
-                        MainActivity.hasMagnetic = false;
-                        MainActivity.hasGeoMagneticRotation = true;
+                        MainActivity.hasMagnetic = true;
+                        MainActivity.hasGeoMagneticRotation = false;
                         MainActivity.hasGravity = false;
                         MainActivity.hasGyro = false;
 

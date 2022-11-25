@@ -1,20 +1,24 @@
-package com.example.gyrocollector;
+package com.example.gyrocollector.sensors;
 
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+
+import com.example.gyrocollector.MainActivity;
+
 import java.util.ArrayList;
 
-public class Accelerometer extends BaseSensor{
+public class Gyroscope extends BaseSensor{
+
     //Constructor
-    Accelerometer(Context context, SensorManager sensorManager)
+    Gyroscope(Context context, SensorManager sensorManager)
     {
         //Initializing the variables
         this.context = context;
         this.sensorManager = sensorManager;
-        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         sensorList = new ArrayList<>();
 
         //Initializing the sensorEventListener
@@ -25,17 +29,17 @@ public class Accelerometer extends BaseSensor{
                 // check if listener is different from null
                 //sensorEvent.timestamp; This should go on the front of the file
                 if (listener != null) {
-                    // !(MainActivity.hasGyro.equals(false) && MainActivity.hasAccelero.equals(true))
-                    if (!(MainActivity.hasAccelero.equals(true)
+                    // !(MainActivity.hasGyro.equals(true) && MainActivity.hasAccelero.equals(false)
+                    if (!(MainActivity.hasAccelero.equals(false)
                             && MainActivity.hasMagnetic.equals(false)
                             && MainActivity.hasGeoMagneticRotation.equals(false)
                             && MainActivity.hasGravity.equals(false)
-                            && MainActivity.hasGyro.equals(false))) {
-                        MainActivity.hasAccelero = true;
+                            && MainActivity.hasGyro.equals(true))) {
+                        MainActivity.hasAccelero = false;
                         MainActivity.hasMagnetic = false;
                         MainActivity.hasGeoMagneticRotation = false;
                         MainActivity.hasGravity = false;
-                        MainActivity.hasGyro = false;
+                        MainActivity.hasGyro = true;
 
                         timesTamp = sensorEvent.timestamp;
                         sensorList.add(sensorEvent.values[0] + "," + sensorEvent.values[1] + "," + sensorEvent.values[2]);

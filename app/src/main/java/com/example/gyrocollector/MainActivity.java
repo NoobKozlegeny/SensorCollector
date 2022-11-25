@@ -17,6 +17,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.gyrocollector.sensors.Accelerometer;
+import com.example.gyrocollector.sensors.GeoMagneticRotationVector;
+import com.example.gyrocollector.sensors.Gravity;
+import com.example.gyrocollector.sensors.Gyroscope;
+import com.example.gyrocollector.sensors.MagneticField;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
@@ -25,7 +31,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 

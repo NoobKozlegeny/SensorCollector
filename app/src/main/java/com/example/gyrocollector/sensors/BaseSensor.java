@@ -1,4 +1,4 @@
-package com.example.gyrocollector;
+package com.example.gyrocollector.sensors;
 
 import android.content.Context;
 import android.content.Intent;

@@ -1,4 +1,4 @@
-package com.example.gyrocollector;
+package com.example.gyrocollector.sensors;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,6 +7,8 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.net.Uri;
+
+import com.example.gyrocollector.MainActivity;
 
 import java.io.IOException;
 import java.io.OutputStream;
