@@ -5,14 +5,42 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/purple_200"
+    android:background="#171717"
     tools:context=".MainActivity">
+
+    <Spinner
+        android:id="@+id/sp_selectTFModel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#FF00FB"
+        android:minHeight="48dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.275"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.389"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <TextView
+        android:id="@+id/tv_selectTFModel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select TFLite model"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.247"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.337" />
 
     <Button
         android:id="@+id/bt_clearAxisList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="200dp"
+        android:backgroundTint="#0088FF"
         android:onClick="bt_clearAxisListOnClick"
         android:text="Clear collected datas"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -24,10 +52,13 @@
         android:id="@+id/gatherLength"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="#FF00FB"
         android:ems="10"
+        android:foregroundTint="#EA0000"
         android:hint="Gather data for X mins"
         android:inputType="numberSigned"
         android:minHeight="48dp"
+        android:textColor="#EF0000"
         app:layout_constraintBottom_toTopOf="@+id/bt_gatherStart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
@@ -40,6 +71,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="260dp"
+        android:backgroundTint="#0088FF"
         android:onClick="bt_gatherStartOnClick"
         android:text="Start Gathering"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -56,6 +88,7 @@
         android:layout_marginBottom="116dp"
         android:text="A simple sensor data collector"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toTopOf="@+id/gatherLength"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.504"
@@ -68,6 +101,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Accelerometer data"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.25"
@@ -80,6 +114,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Gyroscope data"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.756"
@@ -87,29 +122,32 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.168" />
 
-    <TextView
-        android:id="@+id/tv_selectMode"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Select the mode in the Menu"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.363" />
-
     <Spinner
         android:id="@+id/sp_selectMode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="#FF00FB"
         android:minHeight="48dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.746"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.401"
+        app:layout_constraintVertical_bias="0.389"
         tools:ignore="SpeakableTextPresentCheck" />
+
+    <TextView
+        android:id="@+id/tv_selectMode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select mode"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.774"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.337" />
 
     <TextView
         android:id="@+id/test"
@@ -119,6 +157,7 @@
         android:layout_marginTop="44dp"
         android:layout_marginEnd="176dp"
         android:text="TextView"
+        android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -130,6 +169,7 @@
         android:layout_marginStart="156dp"
         android:layout_marginEnd="161dp"
         android:layout_marginBottom="140dp"
+        android:backgroundTint="#0088FF"
         android:onClick="bt_gatherStopOnClick"
         android:text="Stop Gathering"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -143,6 +183,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="92dp"
         android:text="TextView"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toTopOf="@+id/tv_selectMode"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/gyroData"
@@ -154,6 +195,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="100dp"
         android:text="TextView"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toTopOf="@+id/tv_selectMode"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/acceleroData"

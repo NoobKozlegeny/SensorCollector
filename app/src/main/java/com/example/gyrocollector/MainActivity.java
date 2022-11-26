@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
@@ -23,9 +24,11 @@ import com.example.gyrocollector.sensors.Gravity;
 import com.example.gyrocollector.sensors.Gyroscope;
 import com.example.gyrocollector.sensors.MagneticField;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -35,7 +38,7 @@ import java.util.Collections;
 import java.util.Timer;
 import java.util.TimerTask;
 
-//import org.tensorflow.lite.Interpreter;
+import org.tensorflow.lite.Interpreter;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -68,6 +71,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     static public Boolean hasMagnetic = false;
     static public Boolean hasGeoMagneticRotation = false;
 
+    Interpreter tflite;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,6 +99,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         gmrvList = new ArrayList<>();
         timeList = new ArrayList<>();
 
+        //Initalize the tflite interpreter
+        try {
+            tflite = new Interpreter(loadModelFile());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         //Setting up DropDownMenu's items
         Spinner spinner = findViewById(R.id.sp_selectMode);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource
@@ -104,6 +116,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         //Keeps the screen on
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
+
+    //Memory-map the modei file in Assets
+    private MappedByteBuffer loadModelFile() throws IOException {
+        //Open the model using an input stream, and memory map it to load
+        AssetFileDescriptor fileDescriptor = this.getAssets().openFd("project-11-26.tflite");
+        FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
+        FileChannel fileChannel = inputStream.getChannel();
+        long startOffset = fileDescriptor.getStartOffset();
+        long declaredLength = fileDescriptor.getDeclaredLength();
+        return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength);
     }
 
     //Starts the data gathering for X minutes
@@ -123,8 +146,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     runOnUiThread(() -> {
                         onPause();
                         createFile("ALL");
-//                        createFile("ACCELEROMETER");
-//                        createFile("GYROSCOPE");
+//
+                        //Print the prediction result somewhere
+                        float prediction = doInference("PLACEHOLDER");
+
                     });
                 }
             };
@@ -141,6 +166,25 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             //Starts the sensor's data gathering
             startGathering();
         }
+    }
+
+    //This will make a prediction
+    public float doInference(String input) {
+        //Input shape
+        float[] inputVal = new float[1];
+        inputVal[0] = Float.parseFloat(input);
+
+        //Output
+        float[][] outputVal = new float[1][1];
+
+        //Run inference
+        tflite.run(inputVal, outputVal);
+
+        //Inferred value
+        float inferredValue = outputVal[0][0];
+
+        //Return the result
+        return inferredValue;
     }
 
     //Stops data gathering by clicking on the stop gathering button
