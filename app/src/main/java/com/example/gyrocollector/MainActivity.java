@@ -1,10 +1,10 @@
 package com.example.gyrocollector;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.net.Uri;
@@ -25,6 +25,7 @@ import com.example.gyrocollector.sensors.MagneticField;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.MappedByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -33,6 +34,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Timer;
 import java.util.TimerTask;
+
+//import org.tensorflow.lite.Interpreter;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -90,7 +93,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         magneticFieldList = new ArrayList<>();
         gmrvList = new ArrayList<>();
         timeList = new ArrayList<>();
-
 
         //Setting up DropDownMenu's items
         Spinner spinner = findViewById(R.id.sp_selectMode);
