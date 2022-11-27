@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
-import android.graphics.Bitmap;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.net.Uri;
@@ -39,6 +38,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.tensorflow.lite.Delegate;
 import org.tensorflow.lite.DelegateFactory;
@@ -59,7 +59,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     TextView gyroText;
     TextView gravityText;
     TextView magneticFieldText;
-    Timer timer;
+    TextView predictionText;
+    Timer dataGatheringTimer;
+    Timer predictTimer;
     LocalTime localTime;
     String selectedMode;
 
@@ -93,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         gyroText = findViewById(R.id.gyroData);
         gravityText = findViewById(R.id.gravityData);
         magneticFieldText = findViewById(R.id.magneticFieldData);
+        predictionText = findViewById(R.id.tv_predictionData);
         sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         selectedMode = "Slow";
 
@@ -162,21 +165,49 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         //Checks if the time's text did get a number input
         if (time.getText().toString().matches("\\d+(?:\\.\\d+)?")){
+            //Getting the minute which have been added to the text
             String input = time.getText().toString();
             long minutes = Long.parseLong(input) * 60000;
+
+            //This variable will decide which part of the collected datas will be predicted on
+            AtomicInteger fromMinute = new AtomicInteger();
+
             //TimerTask which will create the file and stops the background data gathering
-            timer = new Timer("Timer");
-            TimerTask task = new TimerTask() {
+            dataGatheringTimer = new Timer("dataGatheringTimer");
+            predictTimer = new Timer("predictTimer");
+            TimerTask dataGatheringTask = new TimerTask() {
                 @Override
                 public void run() {
                     runOnUiThread(() -> {
                         onPause();
-                        float predictions = doInference();
                         createFile("ALL");
-//
-                        //Print the prediction result somewhere
+                    });
+                }
+            };
+            TimerTask predictTask = new TimerTask() {
+                @Override
+                public void run() {
+                    runOnUiThread(() -> {
+                        //Make a prediction and get the confidences
+                        float[] predictions = doInference(fromMinute.get());
 
+                        //Increase the fromMinute so next time we won't predict on the same data again
+                        fromMinute.addAndGet(1);
 
+                        //Find the label (index in this case) with the highest confidence
+                        int bestConfidenceIdx = -1;
+                        for (int i = 0; i < predictions.length; i++) {
+                            if (bestConfidenceIdx < predictions[i]) { bestConfidenceIdx = i; }
+                        }
+
+                        //Display the prediction result onto the predictionData text
+                        String newLine = System.getProperty("line.separator");
+                        predictionText.setText(String.join(newLine,
+                                "Prediction + Confidence results:",
+                                String.format("Predicted: ", bestConfidenceIdx),
+                                "0: ",
+                                "1: ",
+                                "2: "));
                     });
                 }
             };
@@ -184,8 +215,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             Thread.sleep(5000);
             //Starts the sensor's data gathering
             startGathering();
-            //Starts timer
-            timer.schedule(task, minutes);
+            //Starts timers
+            dataGatheringTimer.schedule(dataGatheringTask, minutes);
+            predictTimer.schedule(predictTask, 60000, 60000); //Periodically runs every minute
         }
         else {
             //Sleeps for a bit to properly prepare for the data session
@@ -196,10 +228,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     //This will make a prediction
-    public float doInference() {
+    public float[] doInference(int fromMinute) {
         //We're gonna select 1 min of data which will be the input
-        float input[][][] = new float[1][60][15];
-        for (int i = 0; i < 60; i++) {
+        float[][][] input = new float[1][60][15];
+        for (int i = fromMinute * 60; i < fromMinute * 60 + 60; i++) {
             String[] accSplits = accelerometerList.get(i).split(",");
             String[] gyroSplits = gyroList.get(i).split(",");
             String[] gravitySplits = gravityList.get(i).split(",");
