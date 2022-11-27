@@ -23,6 +23,8 @@ import com.example.gyrocollector.sensors.GeoMagneticRotationVector;
 import com.example.gyrocollector.sensors.Gravity;
 import com.example.gyrocollector.sensors.Gyroscope;
 import com.example.gyrocollector.sensors.MagneticField;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tflite.java.TfLite;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -38,7 +40,13 @@ import java.util.Collections;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.tensorflow.lite.Delegate;
+import org.tensorflow.lite.DelegateFactory;
 import org.tensorflow.lite.Interpreter;
+import org.tensorflow.lite.InterpreterApi;
+import org.tensorflow.lite.InterpreterApi.Options.TfLiteRuntime;
+import org.tensorflow.lite.RuntimeFlavor;
+import  org.tensorflow.lite.flex.FlexDelegate;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -71,7 +79,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     static public Boolean hasMagnetic = false;
     static public Boolean hasGeoMagneticRotation = false;
 
-    Interpreter tflite;
+    //Interpreter tflite;
+    private InterpreterApi interpreter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,12 +108,29 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         gmrvList = new ArrayList<>();
         timeList = new ArrayList<>();
 
-        //Initalize the tflite interpreter
-        try {
-            tflite = new Interpreter(loadModelFile());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        //Initalize task
+        Task<Void> initializeTask = TfLite.initialize(this);
+
+        //Initialize the interpreter
+        initializeTask.addOnSuccessListener(a -> {
+            try {
+                DelegateFactory delegateFactory = new DelegateFactory() {
+                    @Override
+                    public Delegate create(RuntimeFlavor runtimeFlavor) {
+                        return new FlexDelegate();
+                    }
+                };
+                InterpreterApi.Options options = new Interpreter.Options()
+                        .setRuntime(TfLiteRuntime.FROM_SYSTEM_ONLY)
+                        .addDelegateFactory(delegateFactory);
+                interpreter = InterpreterApi.create(loadModelFile(), options);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).addOnFailureListener(e -> {
+            Log.e("Interpreter", String.format("Cannot initialize interpreter: %s",
+                    e.getMessage()));
+        });
 
         //Setting up DropDownMenu's items
         Spinner spinner = findViewById(R.id.sp_selectMode);
@@ -145,10 +171,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 public void run() {
                     runOnUiThread(() -> {
                         onPause();
+                        float predictions = doInference();
                         createFile("ALL");
 //
                         //Print the prediction result somewhere
-                        float prediction = doInference("PLACEHOLDER");
+
 
                     });
                 }
@@ -169,22 +196,30 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     //This will make a prediction
-    public float doInference(String input) {
-        //Input shape
-        float[] inputVal = new float[1];
-        inputVal[0] = Float.parseFloat(input);
+    public float doInference() {
+        //We're gonna select 1 min of data which will be the input
+        float input[][][] = new float[1][60][15];
+        for (int i = 0; i < 60; i++) {
+            String[] accSplits = accelerometerList.get(i).split(",");
+            String[] gyroSplits = gyroList.get(i).split(",");
+            String[] gravitySplits = gravityList.get(i).split(",");
+            String[] mfSplits = magneticFieldList.get(i).split(",");
+            String[] gmrvSplits = gmrvList.get(i).split(",");
+            input[0][i] = new float[]{Float.parseFloat(accSplits[0]), Float.parseFloat(accSplits[1]), Float.parseFloat(accSplits[2]),
+                Float.parseFloat(gyroSplits[0]), Float.parseFloat(gyroSplits[1]), Float.parseFloat(gyroSplits[2]),
+                Float.parseFloat(gravitySplits[0]), Float.parseFloat(gravitySplits[1]), Float.parseFloat(gravitySplits[2]),
+                Float.parseFloat(mfSplits[0]), Float.parseFloat(mfSplits[1]), Float.parseFloat(mfSplits[2]),
+                Float.parseFloat(gmrvSplits[0]), Float.parseFloat(gmrvSplits[1]), Float.parseFloat(gmrvSplits[2])};
+        }
 
-        //Output
-        float[][] outputVal = new float[1][1];
+        //Define the shape of output, the result will be stored here
+        float[][] outputVal = new float[1][3];
 
         //Run inference
-        tflite.run(inputVal, outputVal);
-
-        //Inferred value
-        float inferredValue = outputVal[0][0];
+        interpreter.run(input, outputVal);
 
         //Return the result
-        return inferredValue;
+        return outputVal[0];
     }
 
     //Stops data gathering by clicking on the stop gathering button
