@@ -194,20 +194,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         //Increase the fromMinute so next time we won't predict on the same data again
                         fromMinute.addAndGet(1);
 
-                        //Find the label (index in this case) with the highest confidence
-                        int bestConfidenceIdx = -1;
-                        for (int i = 0; i < predictions.length; i++) {
-                            if (bestConfidenceIdx < predictions[i]) { bestConfidenceIdx = i; }
-                        }
-
                         //Display the prediction result onto the predictionData text
                         String newLine = System.getProperty("line.separator");
                         predictionText.setText(String.join(newLine,
-                                "Prediction + Confidence results:",
-                                String.format("Predicted: ", bestConfidenceIdx),
-                                "0: ",
-                                "1: ",
-                                "2: "));
+                                "Confidence results:",
+                                "0 (Slow): " + predictions[0],
+                                "1 (Normal): " + predictions[1],
+                                "2 (Fast): " + predictions[2]));
                     });
                 }
             };
@@ -231,17 +224,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public float[] doInference(int fromMinute) {
         //We're gonna select 1 min of data which will be the input
         float[][][] input = new float[1][60][15];
-        for (int i = fromMinute * 60; i < fromMinute * 60 + 60; i++) {
+        int inputIdx = 0;
+        int fromMinuteStart = fromMinute * 60;
+        int fromMinuteEnd = fromMinute * 60 + 60;
+
+        for (int i = fromMinuteStart; i < fromMinuteEnd; i++) {
             String[] accSplits = accelerometerList.get(i).split(",");
             String[] gyroSplits = gyroList.get(i).split(",");
             String[] gravitySplits = gravityList.get(i).split(",");
             String[] mfSplits = magneticFieldList.get(i).split(",");
             String[] gmrvSplits = gmrvList.get(i).split(",");
-            input[0][i] = new float[]{Float.parseFloat(accSplits[0]), Float.parseFloat(accSplits[1]), Float.parseFloat(accSplits[2]),
+            input[0][inputIdx] = new float[]{Float.parseFloat(accSplits[0]), Float.parseFloat(accSplits[1]), Float.parseFloat(accSplits[2]),
                 Float.parseFloat(gyroSplits[0]), Float.parseFloat(gyroSplits[1]), Float.parseFloat(gyroSplits[2]),
                 Float.parseFloat(gravitySplits[0]), Float.parseFloat(gravitySplits[1]), Float.parseFloat(gravitySplits[2]),
                 Float.parseFloat(mfSplits[0]), Float.parseFloat(mfSplits[1]), Float.parseFloat(mfSplits[2]),
                 Float.parseFloat(gmrvSplits[0]), Float.parseFloat(gmrvSplits[1]), Float.parseFloat(gmrvSplits[2])};
+
+            inputIdx++;
         }
 
         //Define the shape of output, the result will be stored here
