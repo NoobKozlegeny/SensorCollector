@@ -39,6 +39,7 @@ import java.util.Collections;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.tensorflow.lite.Delegate;
 import org.tensorflow.lite.DelegateFactory;
@@ -75,6 +76,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public ArrayList<String> accelerometerList, gyroList, gravityList, magneticFieldList, gmrvList;
     public ArrayList<String> timeList;
 
+    public ArrayList<String> accelerometerListAVG, gyroListAVG, gravityListAVG, magneticFieldListAVG, gmrvListAVG;
+    public ArrayList<String> timeListAVG;
+
     static public Boolean hasGyro = false;
     static public Boolean hasAccelero = false;
     static public Boolean hasGravity = false;
@@ -104,12 +108,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         gravity = new Gravity(this, sensorManager);
         magneticField = new MagneticField(this, sensorManager);
         geoMagneticRotationVector = new GeoMagneticRotationVector(this, sensorManager);
+
         accelerometerList = new ArrayList<>();
         gyroList = new ArrayList<>();
         gravityList = new ArrayList<>();
         magneticFieldList = new ArrayList<>();
         gmrvList = new ArrayList<>();
         timeList = new ArrayList<>();
+
+        accelerometerListAVG = new ArrayList<>();
+        gyroListAVG = new ArrayList<>();
+        gravityListAVG = new ArrayList<>();
+        magneticFieldListAVG = new ArrayList<>();
+        gmrvListAVG = new ArrayList<>();
+        timeListAVG = new ArrayList<>();
 
         //Initalize task
         Task<Void> initializeTask = TfLite.initialize(this);
@@ -269,14 +281,46 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
         timeList.add(formatter.format(localTime));
 
+        // These are for the average lists
+        final LocalTime[] oldTime = {LocalTime.now()};
+        ArrayList<String> tempAcceleratorList = new ArrayList<>();
+
         if (sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION) != null) {
             accelerometer.setListener((timestamp, tx, ty, ts) -> {
                 acceleratorText.setText(tx + "\n" + ty + "\n" + ts);
                 accelerometerList.add(tx + "," + ty + "," + ts);
                 Log.d("Accelerometer", tx + "," + ty + "," + ts);
 
-                // Spaghetti code but I need to add data to the timeList somehow
-                fillTimeList(formatter);
+                // Check if a minute have passed. If yes then the new time will be added to the list.
+                // Otherwise a placeholder text will be added in place
+                localTime = LocalTime.now();
+                timeList.add(formatter.format(localTime));
+
+                //Put to AVG list if a minute have passed
+                if (!formatter.format(oldTime[0]).equals(formatter.format(localTime))) {
+                    oldTime[0] = localTime;
+
+                    if (tempAcceleratorList.size() != 0) {
+                        Float sensor_X = (float) 0;
+                        Float sensor_Y = (float) 0;
+                        Float sensor_Z = (float) 0;
+                        for (String item : tempAcceleratorList) {
+                            String[] sensorValues = item.split(",");
+                            sensor_X += Float.parseFloat(sensorValues[0]);
+                            sensor_Y += Float.parseFloat(sensorValues[1]);
+                            sensor_Z += Float.parseFloat(sensorValues[2]);
+                        }
+                        sensor_X /= tempAcceleratorList.size();
+                        sensor_Y /= tempAcceleratorList.size();
+                        sensor_Z /= tempAcceleratorList.size();
+
+                        tempAcceleratorList.clear();
+                        accelerometerListAVG.add(sensor_X + "," + sensor_Y + "," + sensor_Z);
+                    }
+                }
+                else {
+                    tempAcceleratorList.add(tx + "," + ty + "," + ts);
+                }
             });
         }
         if (sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null) {
@@ -313,13 +357,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         gravity.register();
         magneticField.register();
         geoMagneticRotationVector.register();
-    }
-
-    public void fillTimeList(DateTimeFormatter formatter) {
-        // Check if a minute have passed. If yes then the new time will be added to the list.
-        // Otherwise a placeholder text will be added in place
-        localTime = LocalTime.now();
-        timeList.add(formatter.format(localTime));
     }
 
     //Clears List
