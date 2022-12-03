@@ -238,14 +238,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         float[][][] input = new float[1][60][15];
         int inputIdx = 0;
         int fromMinuteStart = fromMinute * 60;
-        int fromMinuteEnd = fromMinute * 60 + 60;
+        int fromMinuteEnd = fromMinute * 60 + 58;
 
         for (int i = fromMinuteStart; i < fromMinuteEnd; i++) {
-            String[] accSplits = accelerometerList.get(i).split(",");
-            String[] gyroSplits = gyroList.get(i).split(",");
-            String[] gravitySplits = gravityList.get(i).split(",");
-            String[] mfSplits = magneticFieldList.get(i).split(",");
-            String[] gmrvSplits = gmrvList.get(i).split(",");
+            String[] accSplits = accelerometerListAVG.get(i).split(",");
+            String[] gyroSplits = gyroListAVG.get(i).split(",");
+            String[] gravitySplits = gravityListAVG.get(i).split(",");
+            String[] mfSplits = magneticFieldListAVG.get(i).split(",");
+            String[] gmrvSplits = gmrvListAVG.get(i).split(",");
             input[0][inputIdx] = new float[]{Float.parseFloat(accSplits[0]), Float.parseFloat(accSplits[1]), Float.parseFloat(accSplits[2]),
                 Float.parseFloat(gyroSplits[0]), Float.parseFloat(gyroSplits[1]), Float.parseFloat(gyroSplits[2]),
                 Float.parseFloat(gravitySplits[0]), Float.parseFloat(gravitySplits[1]), Float.parseFloat(gravitySplits[2]),
@@ -282,7 +282,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         timeList.add(formatter.format(localTime));
 
         // These are for the average lists
-        final LocalTime[] oldTime = {LocalTime.now()};
+        final LocalTime[] oldTime = {LocalTime.now(), LocalTime.now(),
+                LocalTime.now(), LocalTime.now(), LocalTime.now()};
         ArrayList<String> tempAcceleratorList = new ArrayList<>();
         ArrayList<String> tempGyroList = new ArrayList<>();
         ArrayList<String> tempGravityList = new ArrayList<>();
@@ -302,7 +303,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 //Put to AVG list if a minute have passed
                 if (!formatter.format(oldTime[0]).equals(formatter.format(localTime))) {
-                    accelerometerListAVG.add(createAVGSample(oldTime, tempAcceleratorList));
+                    oldTime[0] = localTime;
+                    accelerometerListAVG.add(createAVGSample(tempAcceleratorList));
+                    tempAcceleratorList.clear();
                 }
                 else {
                     tempAcceleratorList.add(tx + "," + ty + "," + ts);
@@ -316,8 +319,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 Log.d("Gyro", tx + "," + ty + "," + ts);
 
                 //Put to AVG list if a minute have passed
-                if (!formatter.format(oldTime[0]).equals(formatter.format(localTime))) {
-                    gyroListAVG.add(createAVGSample(oldTime, tempGyroList));
+                if (!formatter.format(oldTime[1]).equals(formatter.format(localTime))) {
+                    oldTime[1] = localTime;
+                    gyroListAVG.add(createAVGSample(tempGyroList));
+                    tempGyroList.clear();
                 }
                 else {
                     tempGyroList.add(tx + "," + ty + "," + ts);
@@ -331,8 +336,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 Log.d("Gravity", tx + "," + ty + "," + ts);
 
                 //Put to AVG list if a minute have passed
-                if (!formatter.format(oldTime[0]).equals(formatter.format(localTime))) {
-                    gravityListAVG.add(createAVGSample(oldTime, tempGravityList));
+                if (!formatter.format(oldTime[2]).equals(formatter.format(localTime))) {
+                    oldTime[2] = localTime;
+                    gravityListAVG.add(createAVGSample(tempGravityList));
+                    tempGravityList.clear();
                 }
                 else {
                     tempGravityList.add(tx + "," + ty + "," + ts);
@@ -346,8 +353,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 Log.d("Magnetic", tx + "," + ty + "," + ts);
 
                 //Put to AVG list if a minute have passed
-                if (!formatter.format(oldTime[0]).equals(formatter.format(localTime))) {
-                    magneticFieldListAVG.add(createAVGSample(oldTime, tempMFList));
+                if (!formatter.format(oldTime[3]).equals(formatter.format(localTime))) {
+                    oldTime[3] = localTime;
+                    magneticFieldListAVG.add(createAVGSample(tempMFList));
+                    tempMFList.clear();
                 }
                 else {
                     tempMFList.add(tx + "," + ty + "," + ts);
@@ -361,8 +370,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 Log.d("GeoMagneticRotation", tx + "," + ty + "," + ts);
 
                 //Put to AVG list if a minute have passed
-                if (!formatter.format(oldTime[0]).equals(formatter.format(localTime))) {
-                    gmrvListAVG.add(createAVGSample(oldTime, tempGMRVList));
+                if (!formatter.format(oldTime[4]).equals(formatter.format(localTime))) {
+                    oldTime[4] = localTime;
+                    gmrvListAVG.add(createAVGSample(tempGMRVList));
+                    tempGMRVList.clear();
                 }
                 else {
                     tempGMRVList.add(tx + "," + ty + "," + ts);
@@ -377,9 +388,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         geoMagneticRotationVector.register();
     }
 
-    public String createAVGSample(LocalTime[] oldTime, ArrayList<String> tempList) {
+    public String createAVGSample(ArrayList<String> tempList) {
         String avgSample = "";
-        oldTime[0] = localTime;
 
         if (tempList.size() != 0) {
             Float sensor_X = (float) 0;
@@ -395,7 +405,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             sensor_Y /= tempList.size();
             sensor_Z /= tempList.size();
 
-            tempList.clear();
             avgSample = sensor_X + "," + sensor_Y + "," + sensor_Z;
         }
         return avgSample;
