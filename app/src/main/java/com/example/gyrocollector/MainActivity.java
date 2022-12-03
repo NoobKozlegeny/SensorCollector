@@ -284,6 +284,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         // These are for the average lists
         final LocalTime[] oldTime = {LocalTime.now()};
         ArrayList<String> tempAcceleratorList = new ArrayList<>();
+        ArrayList<String> tempGyroList = new ArrayList<>();
+        ArrayList<String> tempGravityList = new ArrayList<>();
+        ArrayList<String> tempMFList = new ArrayList<>();
+        ArrayList<String> tempGMRVList = new ArrayList<>();
 
         if (sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION) != null) {
             accelerometer.setListener((timestamp, tx, ty, ts) -> {
@@ -298,25 +302,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 //Put to AVG list if a minute have passed
                 if (!formatter.format(oldTime[0]).equals(formatter.format(localTime))) {
-                    oldTime[0] = localTime;
-
-                    if (tempAcceleratorList.size() != 0) {
-                        Float sensor_X = (float) 0;
-                        Float sensor_Y = (float) 0;
-                        Float sensor_Z = (float) 0;
-                        for (String item : tempAcceleratorList) {
-                            String[] sensorValues = item.split(",");
-                            sensor_X += Float.parseFloat(sensorValues[0]);
-                            sensor_Y += Float.parseFloat(sensorValues[1]);
-                            sensor_Z += Float.parseFloat(sensorValues[2]);
-                        }
-                        sensor_X /= tempAcceleratorList.size();
-                        sensor_Y /= tempAcceleratorList.size();
-                        sensor_Z /= tempAcceleratorList.size();
-
-                        tempAcceleratorList.clear();
-                        accelerometerListAVG.add(sensor_X + "," + sensor_Y + "," + sensor_Z);
-                    }
+                    accelerometerListAVG.add(createAVGSample(oldTime, tempAcceleratorList));
                 }
                 else {
                     tempAcceleratorList.add(tx + "," + ty + "," + ts);
@@ -328,6 +314,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 gyroText.setText(tx + "\n" + ty + "\n" + ts);
                 gyroList.add(tx + "," + ty + "," + ts);
                 Log.d("Gyro", tx + "," + ty + "," + ts);
+
+                //Put to AVG list if a minute have passed
+                if (!formatter.format(oldTime[0]).equals(formatter.format(localTime))) {
+                    gyroListAVG.add(createAVGSample(oldTime, tempGyroList));
+                }
+                else {
+                    tempGyroList.add(tx + "," + ty + "," + ts);
+                }
             });
         }
         if (sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY) != null) {
@@ -335,6 +329,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 gravityText.setText(tx + "\n" + ty + "\n" + ts);
                 gravityList.add(tx + "," + ty + "," + ts);
                 Log.d("Gravity", tx + "," + ty + "," + ts);
+
+                //Put to AVG list if a minute have passed
+                if (!formatter.format(oldTime[0]).equals(formatter.format(localTime))) {
+                    gravityListAVG.add(createAVGSample(oldTime, tempGravityList));
+                }
+                else {
+                    tempGravityList.add(tx + "," + ty + "," + ts);
+                }
             });
         }
         if (sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) != null) {
@@ -342,6 +344,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 magneticFieldText.setText(tx + "\n" + ty + "\n" + ts);
                 magneticFieldList.add(tx + "," + ty + "," + ts);
                 Log.d("Magnetic", tx + "," + ty + "," + ts);
+
+                //Put to AVG list if a minute have passed
+                if (!formatter.format(oldTime[0]).equals(formatter.format(localTime))) {
+                    magneticFieldListAVG.add(createAVGSample(oldTime, tempMFList));
+                }
+                else {
+                    tempMFList.add(tx + "," + ty + "," + ts);
+                }
             });
         }
         if (sensorManager.getDefaultSensor(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR) != null) {
@@ -349,6 +359,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 // acceleratorText.setText(tx + "\n" + ty + "\n" + ts);
                 gmrvList.add(tx + "," + ty + "," + ts);
                 Log.d("GeoMagneticRotation", tx + "," + ty + "," + ts);
+
+                //Put to AVG list if a minute have passed
+                if (!formatter.format(oldTime[0]).equals(formatter.format(localTime))) {
+                    gmrvListAVG.add(createAVGSample(oldTime, tempGMRVList));
+                }
+                else {
+                    tempGMRVList.add(tx + "," + ty + "," + ts);
+                }
             });
         }
 
@@ -357,6 +375,30 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         gravity.register();
         magneticField.register();
         geoMagneticRotationVector.register();
+    }
+
+    public String createAVGSample(LocalTime[] oldTime, ArrayList<String> tempList) {
+        String avgSample = "";
+        oldTime[0] = localTime;
+
+        if (tempList.size() != 0) {
+            Float sensor_X = (float) 0;
+            Float sensor_Y = (float) 0;
+            Float sensor_Z = (float) 0;
+            for (String item : tempList) {
+                String[] sensorValues = item.split(",");
+                sensor_X += Float.parseFloat(sensorValues[0]);
+                sensor_Y += Float.parseFloat(sensorValues[1]);
+                sensor_Z += Float.parseFloat(sensorValues[2]);
+            }
+            sensor_X /= tempList.size();
+            sensor_Y /= tempList.size();
+            sensor_Z /= tempList.size();
+
+            tempList.clear();
+            avgSample = sensor_X + "," + sensor_Y + "," + sensor_Z;
+        }
+        return avgSample;
     }
 
     //Clears List
