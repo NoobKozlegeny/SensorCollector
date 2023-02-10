@@ -200,12 +200,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 @Override
                 public void run() {
                     runOnUiThread(() -> {
+                        //Replaces empty string ("") to default lines ("0,0,0") in ArrayLists
+                        replaceEmptyData();
                         //Make a prediction and get the confidences
                         float[] predictions = doInference(fromMinute.get());
-
                         //Increase the fromMinute so next time we won't predict on the same data again
                         fromMinute.addAndGet(1);
-
                         //Display the prediction result onto the predictionData text
                         String newLine = System.getProperty("line.separator");
                         predictionText.setText(String.join(newLine,
@@ -232,7 +232,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
+    //Replaces empty string ("") to default lines ("0,0,0") in ArrayLists
+    //TODO: CHECK IF DEFAULTING EMPTY STRING TO 0,0,0 WON'T ALTER ACCURACY
+    public void replaceEmptyData() {
+        accelerometerListAVG.convertEmptyDataToDefault();
+        gyroListAVG.convertEmptyDataToDefault();
+        gravityListAVG.convertEmptyDataToDefault();
+        magneticFieldListAVG.convertEmptyDataToDefault();
+        gmrvListAVG.convertEmptyDataToDefault();
+        timeListAVG.convertEmptyDataToDefault();
+    }
+
     //This will make a prediction
+    //TODO: A list will not necessarily have +60 rows of data, so we have to make a code to prepare for this
     public float[] doInference(int fromMinute) {
         //We're gonna select 1 min of data which will be the input
         float[][][] input = new float[1][60][15];

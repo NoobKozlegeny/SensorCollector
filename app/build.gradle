@@ -66,4 +66,11 @@ dependencies {
     implementation 'com.google.android.gms:play-services-tflite-java:16.0.1'
     // Optional: include Tensorflow Lite Support Library
     implementation 'com.google.android.gms:play-services-tflite-support:16.0.1'
+
+    // Manifold Javac plugin
+    getTasks().withType(JavaCompile) {
+        options.compilerArgs += ['-Xplugin:Manifold']
+    }
+    compileOnly 'systems.manifold:manifold-ext:2022.1.38'
+    implementation 'systems.manifold:manifold-ext-rt:2022.1.38'
 }
