@@ -191,6 +191,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 @Override
                 public void run() {
                     runOnUiThread(() -> {
+                        //Kills the currently running prediction task
+                        predictTimer.purge();
+
                         onPause();
                         createFile("ALL");
                     });
@@ -233,7 +236,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     //Replaces empty string ("") to default lines ("0,0,0") in ArrayLists
-    //TODO: CHECK IF DEFAULTING EMPTY STRING TO 0,0,0 WON'T ALTER ACCURACY
+    //TODO: CHECK IF DEFAULTING EMPTY STRING TO 0,0,0 WON'T ALTER ACCURACY TOO MUCH
     public void replaceEmptyData() {
         accelerometerListAVG.convertEmptyDataToDefault();
         gyroListAVG.convertEmptyDataToDefault();
@@ -244,15 +247,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     //This will make a prediction
-    //TODO: A list will not necessarily have +60 rows of data, so we have to make a code to prepare for this
+    //TODO: A list will not necessarily have +60 rows of data, so we have to make the code prepare for this
     public float[] doInference(int fromMinute) {
         //We're gonna select 1 min of data which will be the input
         float[][][] input = new float[1][60][15];
         int inputIdx = 0;
-        int fromMinuteStart = fromMinute * 60;
-        int fromMinuteEnd = fromMinute * 60 + 58;
 
-        for (int i = fromMinuteStart; i < fromMinuteEnd; i++) {
+        for (int i = 0; i < 58; i++) {
             String[] accSplits = accelerometerListAVG.get(i).split(",");
             String[] gyroSplits = gyroListAVG.get(i).split(",");
             String[] gravitySplits = gravityListAVG.get(i).split(",");
@@ -266,6 +267,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             inputIdx++;
         }
+
+        accelerometerListAVG.clear();
+        gyroListAVG.clear();
+        gravityListAVG.clear();
+        magneticFieldListAVG.clear();
+        gmrvListAVG.clear();
 
         //Define the shape of output, the result will be stored here
         float[][] outputVal = new float[1][3];
