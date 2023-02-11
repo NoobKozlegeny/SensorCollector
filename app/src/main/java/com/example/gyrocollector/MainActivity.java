@@ -22,6 +22,7 @@ import com.example.gyrocollector.sensors.GeoMagneticRotationVector;
 import com.example.gyrocollector.sensors.Gravity;
 import com.example.gyrocollector.sensors.Gyroscope;
 import com.example.gyrocollector.sensors.MagneticField;
+import com.example.gyrocollector.tfmodels.TfModel;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tflite.java.TfLite;
 
@@ -55,14 +56,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     static final int CREATE_FILE_GYRO = 2;
     static final int CREATE_FILE_ALL = 3;
 
-    TextView testText;
-    TextView acceleratorText;
-    TextView gyroText;
-    TextView gravityText;
-    TextView magneticFieldText;
-    TextView predictionText;
-    Timer dataGatheringTimer;
-    Timer predictTimer;
+    TextView testText, acceleratorText, gyroText, gravityText, magneticFieldText, predictionText;
+    Timer dataGatheringTimer, predictTimer;
     LocalTime localTime;
     String selectedMode;
 
@@ -122,6 +117,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         magneticFieldListAVG = new ArrayList<>();
         gmrvListAVG = new ArrayList<>();
         timeListAVG = new ArrayList<>();
+
+
 
         //Initalize task
         Task<Void> initializeTask = TfLite.initialize(this);
