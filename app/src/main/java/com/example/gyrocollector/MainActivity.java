@@ -236,7 +236,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     //Replaces empty string ("") to default lines ("0,0,0") in ArrayLists
-    //TODO: CHECK IF DEFAULTING EMPTY STRING TO 0,0,0 WON'T ALTER ACCURACY TOO MUCH
     public void replaceEmptyData() {
         accelerometerListAVG.convertEmptyDataToDefault();
         gyroListAVG.convertEmptyDataToDefault();
@@ -247,7 +246,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     //This will make a prediction
-    //TODO: A list will not necessarily have +60 rows of data, so we have to make the code prepare for this
     public float[] doInference(int fromMinute) {
         //We're gonna select 1 min of data which will be the input
         float[][][] input = new float[1][60][15];
