@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         gmrvListAVG = new ArrayList<>();
         timeListAVG = new ArrayList<>();
 
-
+        //interpreter = TfModel.initializeInterpeter(this);
 
         //Initalize task
         Task<Void> initializeTask = TfLite.initialize(this);
