@@ -22,13 +22,5 @@ fun createIntent(name: String, selectedMode: String): Intent {
     return intent;
 }
 
-fun equalizeList(list: ArrayList<String>, lineToAdd: String, maxLength: Int): ArrayList<String> {
-    var i: Int = list.size
-    while (i < maxLength) {
-        list.add(lineToAdd)
-        i++
-    }
 
-    return list;
-}
 
