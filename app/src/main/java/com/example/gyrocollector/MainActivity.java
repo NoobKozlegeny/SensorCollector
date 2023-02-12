@@ -1,5 +1,8 @@
 package com.example.gyrocollector;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -499,36 +502,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         magneticFieldList.size(), gmrvList.size()));
         int maxLength = Collections.max(listLengths);
 
-        int i = accelerometerList.size();
-        while (i < maxLength) {
-            accelerometerList.add("");
-            i++;
-        }
-        i = gyroList.size();
-        while (i < maxLength) {
-            gyroList.add("");
-            i++;
-        }
-        i = gravityList.size();
-        while (i < maxLength) {
-            gravityList.add("");
-            i++;
-        }
-        i = magneticFieldList.size();
-        while (i < maxLength) {
-            magneticFieldList.add("");
-            i++;
-        }
-        i = gmrvList.size();
-        while (i < maxLength) {
-            gmrvList.add("");
-            i++;
-        }
-        i = timeList.size();
-        while (i < maxLength) {
-            timeList.add("-");
-            i++;
-        }
+        accelerometerList = Helpers.equalizeList(accelerometerList, "", maxLength);
+        gyroList = Helpers.equalizeList(gyroList, "", maxLength);
+        gravityList = Helpers.equalizeList(gravityList, "", maxLength);
+        magneticFieldList = Helpers.equalizeList(magneticFieldList, "", maxLength);
+        gmrvList = Helpers.equalizeList(gmrvList, "", maxLength);
+        timeList = Helpers.equalizeList(timeList, "-", maxLength);
     }
 
     // This will export all the sensors data into one CSV

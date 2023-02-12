@@ -5,6 +5,7 @@ package com.example.gyrocollector.helpers
 import android.content.Intent
 import java.time.LocalDate
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 //Saves data to CSV file
@@ -19,5 +20,15 @@ fun createIntent(name: String, selectedMode: String): Intent {
     intent.putExtra(Intent.EXTRA_TITLE, fileName)
 
     return intent;
+}
+
+fun equalizeList(list: ArrayList<String>, lineToAdd: String, maxLength: Int): ArrayList<String> {
+    var i: Int = list.size
+    while (i < maxLength) {
+        list.add(lineToAdd)
+        i++
+    }
+
+    return list;
 }
 
