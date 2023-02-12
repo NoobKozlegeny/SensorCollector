@@ -2,7 +2,13 @@
 
 package com.example.gyrocollector.helpers
 
+import android.content.Context
 import android.content.Intent
+import android.content.res.AssetFileDescriptor
+import java.io.FileInputStream
+import java.io.IOException
+import java.nio.MappedByteBuffer
+import java.nio.channels.FileChannel
 import java.time.LocalDate
 import java.util.*
 
@@ -59,5 +65,17 @@ fun combineSensorLists(accelerometerList: ArrayList<String>, gyroList: ArrayList
     }
 
     return combinedList;
+}
+
+//Memory-map the modei file in Assets
+@Throws(IOException::class)
+fun loadModelFile(ctx: Context): MappedByteBuffer? {
+    //Open the model using an input stream, and memory map it to load
+    val fileDescriptor: AssetFileDescriptor = ctx.getAssets().openFd("project-11-26.tflite")
+    val inputStream = FileInputStream(fileDescriptor.fileDescriptor)
+    val fileChannel = inputStream.channel
+    val startOffset = fileDescriptor.startOffset
+    val declaredLength = fileDescriptor.declaredLength
+    return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength)
 }
 
