@@ -17,12 +17,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.gyrocollector.helpers.Helpers;
 import com.example.gyrocollector.sensors.Accelerometer;
 import com.example.gyrocollector.sensors.GeoMagneticRotationVector;
 import com.example.gyrocollector.sensors.Gravity;
 import com.example.gyrocollector.sensors.Gyroscope;
 import com.example.gyrocollector.sensors.MagneticField;
-import com.example.gyrocollector.tfmodels.TfModel;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tflite.java.TfLite;
 
@@ -117,8 +117,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         magneticFieldListAVG = new ArrayList<>();
         gmrvListAVG = new ArrayList<>();
         timeListAVG = new ArrayList<>();
-
-        //interpreter = TfModel.initializeInterpeter(this);
 
         //Initalize task
         Task<Void> initializeTask = TfLite.initialize(this);
@@ -462,12 +460,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     //Saves data to CSV file
     private void createFile(String name) {
-        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("text/csv");
-        String fileName = selectedMode + name + java.time.LocalDate.now().toString().split("-")[1]
-                + java.time.LocalDate.now().toString().split("-")[2] + ".csv";
-        intent.putExtra(Intent.EXTRA_TITLE, fileName);
+        Intent intent = Helpers.createIntent(name, selectedMode);
 
         if (name.equals("ACCELEROMETER")){
             startActivityForResult(intent, CREATE_FILE_ACCELERO);
