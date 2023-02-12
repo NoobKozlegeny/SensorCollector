@@ -502,12 +502,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         magneticFieldList.size(), gmrvList.size()));
         int maxLength = Collections.max(listLengths);
 
-        accelerometerList = Helpers.equalizeList(accelerometerList, "", maxLength);
-        gyroList = Helpers.equalizeList(gyroList, "", maxLength);
-        gravityList = Helpers.equalizeList(gravityList, "", maxLength);
-        magneticFieldList = Helpers.equalizeList(magneticFieldList, "", maxLength);
-        gmrvList = Helpers.equalizeList(gmrvList, "", maxLength);
-        timeList = Helpers.equalizeList(timeList, "-", maxLength);
+        accelerometerList.equalizeSensorList(maxLength, "");
+        gyroList.equalizeSensorList(maxLength, "");
+        gravityList.equalizeSensorList(maxLength, "");
+        magneticFieldList.equalizeSensorList(maxLength, "");
+        gmrvList.equalizeSensorList(maxLength, "");
+        timeList.equalizeSensorList(maxLength, "-");
     }
 
     // This will export all the sensors data into one CSV

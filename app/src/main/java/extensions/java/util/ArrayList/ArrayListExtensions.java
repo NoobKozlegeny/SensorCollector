@@ -15,4 +15,13 @@ public class ArrayListExtensions {
         }
         return thiz;
     }
+
+    public static ArrayList<String> equalizeSensorList(@This ArrayList<String> thiz, int maxLength, String lineToAdd) {
+        int i = thiz.size();
+        while (i < maxLength) {
+            thiz.add(lineToAdd);
+            i++;
+        }
+        return thiz;
+    }
 }
