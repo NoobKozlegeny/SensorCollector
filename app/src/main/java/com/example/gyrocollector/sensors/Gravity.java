@@ -30,11 +30,11 @@ public class Gravity extends BaseSensor{
                 //sensorEvent.timestamp; This should go on the front of the file
                 if (listener != null) {
                     // !(MainActivity.hasGyro.equals(false) && MainActivity.hasAccelero.equals(true))
-                    if (!(MainActivity.hasAccelero.equals(false)
-                            && MainActivity.hasMagnetic.equals(false)
-                            && MainActivity.hasGeoMagneticRotation.equals(false)
-                            && MainActivity.hasGravity.equals(true)
-                            && MainActivity.hasGyro.equals(false))) {
+                    if (!(!MainActivity.hasAccelero
+                            && !MainActivity.hasMagnetic
+                            && !MainActivity.hasGeoMagneticRotation
+                            && MainActivity.hasGravity
+                            && !MainActivity.hasGyro)) {
                         MainActivity.hasAccelero = false;
                         MainActivity.hasMagnetic = false;
                         MainActivity.hasGeoMagneticRotation = false;

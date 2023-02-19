@@ -30,11 +30,11 @@ public class MagneticField extends BaseSensor {
                 //sensorEvent.timestamp; This should go on the front of the file
                 if (listener != null) {
                     // !(MainActivity.hasGyro.equals(false) && MainActivity.hasMagnetic.equals(true))
-                    if (!(MainActivity.hasAccelero.equals(false)
-                            && MainActivity.hasMagnetic.equals(true)
-                            && MainActivity.hasGeoMagneticRotation.equals(false)
-                            && MainActivity.hasGravity.equals(false)
-                            && MainActivity.hasGyro.equals(false))) {
+                    if (!(!MainActivity.hasAccelero
+                            && MainActivity.hasMagnetic
+                            && !MainActivity.hasGeoMagneticRotation
+                            && !MainActivity.hasGravity
+                            && !MainActivity.hasGyro)) {
                         MainActivity.hasAccelero = false;
                         MainActivity.hasMagnetic = true;
                         MainActivity.hasGeoMagneticRotation = false;

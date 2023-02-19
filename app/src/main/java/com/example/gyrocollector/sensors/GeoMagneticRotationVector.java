@@ -30,11 +30,11 @@ public class GeoMagneticRotationVector extends BaseSensor{
                 if (listener != null) {
                     // !(MainActivity.hasGyro.equals(false) && MainActivity.hasAccelero.equals(true))
                     // !MainActivity.hasGeoMagneticRotation.equals(true)
-                    if (!(MainActivity.hasAccelero.equals(false)
-                            && MainActivity.hasMagnetic.equals(false)
-                            && MainActivity.hasGeoMagneticRotation.equals(true)
-                            && MainActivity.hasGravity.equals(false)
-                            && MainActivity.hasGyro.equals(false))) {
+                    if (!(!MainActivity.hasAccelero
+                            && !MainActivity.hasMagnetic
+                            && MainActivity.hasGeoMagneticRotation
+                            && !MainActivity.hasGravity
+                            && !MainActivity.hasGyro)) {
                         MainActivity.hasAccelero = false;
                         MainActivity.hasMagnetic = false;
                         MainActivity.hasGeoMagneticRotation = true;

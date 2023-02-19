@@ -60,7 +60,7 @@ public class OldSensorClassForRecovery {
                 //sensorEvent.timestamp; This should go on the front of the file
                 if (listener != null) {
                     // !(MainActivity.hasGyro.equals(false) && MainActivity.hasAccelero.equals(true))
-                    if (!MainActivity.hasGravity.equals(true)) {
+                    if (MainActivity.hasGravity) {
                         MainActivity.hasAccelero = false;
                         MainActivity.hasMagnetic = false;
                         MainActivity.hasGeoMagneticRotation = false;
