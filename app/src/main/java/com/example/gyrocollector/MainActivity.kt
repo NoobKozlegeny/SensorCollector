@@ -53,7 +53,6 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     var timeListAVG: ArrayList<String>? = null
 
     //Interpreter tflite;
-    private val interpreter: InterpreterApi? = null
     var tfLiteModel: TfLiteModel? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
