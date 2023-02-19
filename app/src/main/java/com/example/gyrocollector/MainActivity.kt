@@ -14,7 +14,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.gyrocollector.helpers.*
 import com.example.gyrocollector.sensors.*
-import org.tensorflow.lite.InterpreterApi
 import java.io.IOException
 import java.nio.charset.StandardCharsets
 import java.time.LocalTime
@@ -104,7 +103,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     //Starts the data gathering for X minutes
     @Throws(InterruptedException::class)
-    fun bt_gatherStartOnClick(avv: View?) {
+    fun bt_gatherStartOnClick() {
         //Running the data collecting for X minutes defined in the gatherLength textView, Throws Exception
         val time = findViewById<TextView>(R.id.gatherLength)
 
@@ -138,7 +137,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
                         //Replaces empty string ("") to default lines ("0,0,0") in ArrayLists
                         replaceEmptyData()
                         //Make a prediction and get the confidences
-                        val predictions = doInference(fromMinute.get())
+                        val predictions = doInference()
                         //Increase the fromMinute so next time we won't predict on the same data again
                         fromMinute.addAndGet(1)
                         //Display the prediction result onto the predictionData text
@@ -180,7 +179,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     }
 
     //This will make a prediction
-    fun doInference(fromMinute: Int): FloatArray {
+    fun doInference(): FloatArray {
         //We're gonna select 1 min of data which will be the input
         val input = Array(1) { Array(60) { FloatArray(15) } }
         var inputIdx = 0
@@ -234,7 +233,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     }
 
     //Stops data gathering by clicking on the stop gathering button
-    fun bt_gatherStopOnClick(avv: View?) {
+    fun bt_gatherStopOnClick() {
         // Delete the last 50 lines of data bc we had to stop it manually
         onPause()
         createFile("ALL")
@@ -388,7 +387,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     }
 
     //Clears List
-    fun bt_clearAxisListOnClick(avv: View?) {
+    fun bt_clearAxisListOnClick() {
         accelerometer!!.sensorList.clear()
         gyroscope!!.sensorList.clear()
         gravity!!.sensorList.clear()
@@ -490,6 +489,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
                     outputStream.write("\n".toByteArray(StandardCharsets.UTF_8))
                 }
                 outputStream!!.close()
+                outputStream.close()
             } catch (e: IOException) {
                 e.printStackTrace()
             }
