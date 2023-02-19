@@ -171,12 +171,12 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     //Replaces empty string ("") to default lines ("0,0,0") in ArrayLists
     fun replaceEmptyData() {
-        accelerometerListAVG!!.convertEDTD()
-        gyroListAVG!!.convertEDTD()
-        gravityListAVG!!.convertEDTD()
-        magneticFieldListAVG!!.convertEDTD()
-        gmrvListAVG!!.convertEDTD()
-        timeListAVG!!.convertEDTD()
+        accelerometerListAVG!!.convertEmptyDataToDefault()
+        gyroListAVG!!.convertEmptyDataToDefault()
+        gravityListAVG!!.convertEmptyDataToDefault()
+        magneticFieldListAVG!!.convertEmptyDataToDefault()
+        gmrvListAVG!!.convertEmptyDataToDefault()
+        timeListAVG!!.convertEmptyDataToDefault()
 
     }
 
@@ -459,12 +459,12 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             )
         )
         val maxLength = Collections.max(listLengths)
-        accelerometerList!!.equalizeSL(maxLength, "")
-        gyroList!!.equalizeSL(maxLength, "")
-        gravityList!!.equalizeSL(maxLength, "")
-        magneticFieldList!!.equalizeSL(maxLength, "")
-        gmrvList!!.equalizeSL(maxLength, "")
-        timeList!!.equalizeSL(maxLength, "-")
+        accelerometerList!!.equalizeSensorList(maxLength, "")
+        gyroList!!.equalizeSensorList(maxLength, "")
+        gravityList!!.equalizeSensorList(maxLength, "")
+        magneticFieldList!!.equalizeSensorList(maxLength, "")
+        gmrvList!!.equalizeSensorList(maxLength, "")
+        timeList!!.equalizeSensorList(maxLength, "-")
     }
 
     // This will export all the sensors data into one CSV
