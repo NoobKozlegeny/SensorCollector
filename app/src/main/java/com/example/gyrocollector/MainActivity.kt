@@ -14,7 +14,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.gyrocollector.helpers.*
 import com.example.gyrocollector.sensors.*
-import manifold.ext.rt.api.This
 import org.tensorflow.lite.InterpreterApi
 import java.io.IOException
 import java.nio.charset.StandardCharsets
