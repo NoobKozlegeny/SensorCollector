@@ -21,6 +21,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.gyrocollector.helpers.Helpers;
+import com.example.gyrocollector.helpers.TfLiteModel;
 import com.example.gyrocollector.sensors.Accelerometer;
 import com.example.gyrocollector.sensors.GeoMagneticRotationVector;
 import com.example.gyrocollector.sensors.Gravity;
@@ -85,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     //Interpreter tflite;
     private InterpreterApi interpreter;
+    public TfLiteModel tfLiteModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,29 +123,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         gmrvListAVG = new ArrayList<>();
         timeListAVG = new ArrayList<>();
 
-        //Initalize task
-        Task<Void> initializeTask = TfLite.initialize(this);
-
-        //Initialize the interpreter
-        initializeTask.addOnSuccessListener(a -> {
-            try {
-                DelegateFactory delegateFactory = new DelegateFactory() {
-                    @Override
-                    public Delegate create(RuntimeFlavor runtimeFlavor) {
-                        return new FlexDelegate();
-                    }
-                };
-                InterpreterApi.Options options = new Interpreter.Options()
-                        .setRuntime(TfLiteRuntime.FROM_SYSTEM_ONLY)
-                        .addDelegateFactory(delegateFactory);
-                interpreter = InterpreterApi.create(loadModelFile(), options);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }).addOnFailureListener(e -> {
-            Log.e("Interpreter", String.format("Cannot initialize interpreter: %s",
-                    e.getMessage()));
-        });
+        // Initializng interpreter
+        tfLiteModel = new TfLiteModel(this);
+        tfLiteModel.initialize();
 
         //Setting up DropDownMenu's items
         Spinner spinner = findViewById(R.id.sp_selectMode);
@@ -155,17 +137,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         //Keeps the screen on
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-    }
-
-    //Memory-map the modei file in Assets
-    private MappedByteBuffer loadModelFile() throws IOException {
-        //Open the model using an input stream, and memory map it to load
-        AssetFileDescriptor fileDescriptor = this.getAssets().openFd("project-11-26.tflite");
-        FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
-        FileChannel fileChannel = inputStream.getChannel();
-        long startOffset = fileDescriptor.getStartOffset();
-        long declaredLength = fileDescriptor.getDeclaredLength();
-        return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength);
     }
 
     //Starts the data gathering for X minutes
@@ -274,7 +245,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         float[][] outputVal = new float[1][3];
 
         //Run inference
-        interpreter.run(input, outputVal);
+        tfLiteModel.interpreter.run(input, outputVal);
 
         //Return the result
         return outputVal[0];
