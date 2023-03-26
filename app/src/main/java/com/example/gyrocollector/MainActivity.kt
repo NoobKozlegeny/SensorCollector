@@ -103,7 +103,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     //Starts the data gathering for X minutes
     @Throws(InterruptedException::class)
-    fun bt_gatherStartOnClick() {
+    fun bt_gatherStartOnClick(v: View?) {
         //Running the data collecting for X minutes defined in the gatherLength textView, Throws Exception
         val time = findViewById<TextView>(R.id.gatherLength)
 
@@ -233,7 +233,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     }
 
     //Stops data gathering by clicking on the stop gathering button
-    fun bt_gatherStopOnClick() {
+    fun bt_gatherStopOnClick(v: View?) {
         // Delete the last 50 lines of data bc we had to stop it manually
         onPause()
         createFile("ALL")
@@ -387,7 +387,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     }
 
     //Clears List
-    fun bt_clearAxisListOnClick() {
+    fun bt_clearAxisListOnClick(v: View?) {
         accelerometer!!.sensorList.clear()
         gyroscope!!.sensorList.clear()
         gravity!!.sensorList.clear()
