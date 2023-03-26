@@ -9,8 +9,8 @@ import manifold.ext.rt.api.This;
 public class ArrayListExtensions {
     public static ArrayList<String> convertEmptyDataToDefault(@This ArrayList<String> thiz) {
         for (int i = 0; i < thiz.size(); i++) {
-            if (thiz[i].equals("")) {
-                thiz[i] = "0,0,0";
+            if (thiz.get(i).equals("")) {
+                thiz.set(i, "0,0,0");
             }
         }
         return thiz;
