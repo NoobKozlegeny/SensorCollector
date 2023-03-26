@@ -75,8 +75,8 @@ dependencies {
     getTasks().withType(JavaCompile) {
         options.compilerArgs += ['-Xplugin:Manifold']
     }
-    compileOnly 'systems.manifold:manifold-ext:2022.1.38'
-    implementation 'systems.manifold:manifold-ext-rt:2022.1.38'
+    compileOnly 'systems.manifold:manifold-ext:2023.1.0'
+    implementation 'systems.manifold:manifold-ext-rt:2023.1.0'
     implementation "androidx.core:core-ktx:1.9.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
