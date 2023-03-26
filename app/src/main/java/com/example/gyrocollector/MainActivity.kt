@@ -400,14 +400,6 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         gmrvList!!.clear()
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
-
-    override fun onStart() {
-        super.onStart()
-    }
-
     //Stops the sensor's data gathering
     override fun onPause() {
         super.onPause()
