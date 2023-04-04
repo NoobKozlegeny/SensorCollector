@@ -214,16 +214,20 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         // These are for the average lists
         val oldTime = LocalTime.now()
         if (sensorManager!!.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION) != null) {
+            acceleratorText?.setText("Collecting data ^^")
             accelerometer?.setSensorListener(timeList, formatter, oldTime)
             // setSensorListener(accelerometer, accelerometerList, timeList, formatter, oldTime, accelerometerListAVG, tempAcceleratorList)
         }
         if (sensorManager!!.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null) {
+            gyroText?.setText("Collecting data ^^")
             gyroscope?.setSensorListener(formatter, oldTime)
         }
         if (sensorManager!!.getDefaultSensor(Sensor.TYPE_GRAVITY) != null) {
+            gravityText?.setText("Collecting data ^^")
             gravity?.setSensorListener(formatter, oldTime)
         }
         if (sensorManager!!.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) != null) {
+            magneticFieldText?.setText("Collecting data ^^")
             magneticField?.setSensorListener(formatter, oldTime)
         }
         if (sensorManager!!.getDefaultSensor(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR) != null) {
