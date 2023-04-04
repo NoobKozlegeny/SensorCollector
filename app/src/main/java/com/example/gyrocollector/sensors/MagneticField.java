@@ -20,6 +20,7 @@ public class MagneticField extends BaseSensor {
         this.sensorManager = sensorManager;
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         sensorList = new ArrayList<>();
+        sensorListAVG = new ArrayList<>();
 
         //Initializing the sensorEventListener
         sensorEventListener = new SensorEventListener() {

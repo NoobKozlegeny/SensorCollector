@@ -19,6 +19,7 @@ public class Accelerometer extends BaseSensor{
         this.sensorManager = sensorManager;
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         sensorList = new ArrayList<>();
+        sensorListAVG = new ArrayList<>();
 
         //Initializing the sensorEventListener
         sensorEventListener = new SensorEventListener() {

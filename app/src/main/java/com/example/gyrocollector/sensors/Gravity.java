@@ -20,6 +20,7 @@ public class Gravity extends BaseSensor{
         this.sensorManager = sensorManager;
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
         sensorList = new ArrayList<>();
+        sensorListAVG = new ArrayList<>();
 
         //Initializing the sensorEventListener
         sensorEventListener = new SensorEventListener() {

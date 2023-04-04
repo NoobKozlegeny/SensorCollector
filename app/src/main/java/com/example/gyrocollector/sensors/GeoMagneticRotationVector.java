@@ -19,6 +19,7 @@ public class GeoMagneticRotationVector extends BaseSensor{
         this.sensorManager = sensorManager;
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR);
         sensorList = new ArrayList<>();
+        sensorListAVG = new ArrayList<>();
 
         //Initializing the sensorEventListener
         sensorEventListener = new SensorEventListener() {

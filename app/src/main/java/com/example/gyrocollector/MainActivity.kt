@@ -182,45 +182,35 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     fun doInference(): FloatArray {
         //We're gonna select 1 min of data which will be the input
         val input = Array(1) { Array(60) { FloatArray(15) } }
-        var inputIdx = 0
-        for (i in 0..57) {
+        var inputIdx = 1
+        for (i in 1..57) {
             val accSplits =
-                accelerometerListAVG!![i].split(",".toRegex()).dropLastWhile { it.isEmpty() }
+                accelerometer?.sensorListAVG!![i].split(",".toRegex()).dropLastWhile { it.isEmpty() }
                     .toTypedArray()
             val gyroSplits =
-                gyroListAVG!![i].split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                gyroscope?.sensorListAVG!![i].split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             val gravitySplits =
-                gravityListAVG!![i].split(",".toRegex()).dropLastWhile { it.isEmpty() }
+                gravity?.sensorListAVG!![i].split(",".toRegex()).dropLastWhile { it.isEmpty() }
                     .toTypedArray()
             val mfSplits =
-                magneticFieldListAVG!![i].split(",".toRegex()).dropLastWhile { it.isEmpty() }
+                magneticField?.sensorListAVG!![i].split(",".toRegex()).dropLastWhile { it.isEmpty() }
                     .toTypedArray()
             val gmrvSplits =
-                gmrvListAVG!![i].split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                geoMagneticRotationVector?.sensorListAVG!![i].split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             input[0][inputIdx] = floatArrayOf(
-                accSplits[0].toFloat(),
-                accSplits[1].toFloat(),
-                accSplits[2].toFloat(),
-                gyroSplits[0].toFloat(),
-                gyroSplits[1].toFloat(),
-                gyroSplits[2].toFloat(),
-                gravitySplits[0].toFloat(),
-                gravitySplits[1].toFloat(),
-                gravitySplits[2].toFloat(),
-                mfSplits[0].toFloat(),
-                mfSplits[1].toFloat(),
-                mfSplits[2].toFloat(),
-                gmrvSplits[0].toFloat(),
-                gmrvSplits[1].toFloat(),
-                gmrvSplits[2].toFloat()
+                accSplits[0].toFloat(), accSplits[1].toFloat(), accSplits[2].toFloat(),
+                gyroSplits[0].toFloat(), gyroSplits[1].toFloat(), gyroSplits[2].toFloat(),
+                gravitySplits[0].toFloat(), gravitySplits[1].toFloat(), gravitySplits[2].toFloat(),
+                mfSplits[0].toFloat(), mfSplits[1].toFloat(), mfSplits[2].toFloat(),
+                gmrvSplits[0].toFloat(), gmrvSplits[1].toFloat(), gmrvSplits[2].toFloat()
             )
             inputIdx++
         }
-        accelerometerListAVG!!.clear()
-        gyroListAVG!!.clear()
-        gravityListAVG!!.clear()
-        magneticFieldListAVG!!.clear()
-        gmrvListAVG!!.clear()
+        accelerometer?.sensorListAVG!!.clear()
+        gyroscope?.sensorListAVG!!.clear()
+        gravity?.sensorListAVG!!.clear()
+        magneticField?.sensorListAVG!!.clear()
+        geoMagneticRotationVector?.sensorListAVG!!.clear()
 
         //Define the shape of output, the result will be stored here
         val outputVal = Array(1) { FloatArray(3) }
@@ -248,115 +238,22 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         timeList!!.add(formatter.format(localTime))
 
         // These are for the average lists
-        val oldTime = arrayOf(
-            LocalTime.now(), LocalTime.now(),
-            LocalTime.now(), LocalTime.now(), LocalTime.now()
-        )
-        val tempAcceleratorList = ArrayList<String>()
-        val tempGyroList = ArrayList<String>()
-        val tempGravityList = ArrayList<String>()
-        val tempMFList = ArrayList<String>()
-        val tempGMRVList = ArrayList<String>()
+        val oldTime = LocalTime.now()
         if (sensorManager!!.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION) != null) {
-            accelerometer!!.setListener { timestamp: Long, tx: Float, ty: Float, ts: Float ->
-                acceleratorText!!.text = """
-     $tx
-     $ty
-     $ts
-     """.trimIndent()
-                accelerometerList!!.add("$tx,$ty,$ts")
-                Log.d("Accelerometer", "$tx,$ty,$ts")
-
-                // Check if a minute have passed. If yes then the new time will be added to the list.
-                // Otherwise a placeholder text will be added in place
-                localTime = LocalTime.now()
-                timeList!!.add(formatter.format(localTime))
-
-                //Put to AVG list if a minute have passed
-                if (formatter.format(oldTime[0]) != formatter.format(localTime)) {
-                    oldTime[0] = localTime
-                    accelerometerListAVG!!.add(createAVGSample(tempAcceleratorList))
-                    tempAcceleratorList.clear()
-                } else {
-                    tempAcceleratorList.add("$tx,$ty,$ts")
-                }
-            }
+            accelerometer?.setSensorListener(timeList, formatter, oldTime)
+            // setSensorListener(accelerometer, accelerometerList, timeList, formatter, oldTime, accelerometerListAVG, tempAcceleratorList)
         }
         if (sensorManager!!.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null) {
-            gyroscope!!.setListener { timestamp: Long, tx: Float, ty: Float, ts: Float ->
-                gyroText!!.text = """
-     $tx
-     $ty
-     $ts
-     """.trimIndent()
-                gyroList!!.add("$tx,$ty,$ts")
-                Log.d("Gyro", "$tx,$ty,$ts")
-
-                //Put to AVG list if a minute have passed
-                if (formatter.format(oldTime[1]) != formatter.format(localTime)) {
-                    oldTime[1] = localTime
-                    gyroListAVG!!.add(createAVGSample(tempGyroList))
-                    tempGyroList.clear()
-                } else {
-                    tempGyroList.add("$tx,$ty,$ts")
-                }
-            }
+            gyroscope?.setSensorListener(formatter, oldTime)
         }
         if (sensorManager!!.getDefaultSensor(Sensor.TYPE_GRAVITY) != null) {
-            gravity!!.setListener { timestamp: Long, tx: Float, ty: Float, ts: Float ->
-                gravityText!!.text = """
-     $tx
-     $ty
-     $ts
-     """.trimIndent()
-                gravityList!!.add("$tx,$ty,$ts")
-                Log.d("Gravity", "$tx,$ty,$ts")
-
-                //Put to AVG list if a minute have passed
-                if (formatter.format(oldTime[2]) != formatter.format(localTime)) {
-                    oldTime[2] = localTime
-                    gravityListAVG!!.add(createAVGSample(tempGravityList))
-                    tempGravityList.clear()
-                } else {
-                    tempGravityList.add("$tx,$ty,$ts")
-                }
-            }
+            gravity?.setSensorListener(formatter, oldTime)
         }
         if (sensorManager!!.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) != null) {
-            magneticField!!.setListener { timestamp: Long, tx: Float, ty: Float, ts: Float ->
-                magneticFieldText!!.text = """
-     $tx
-     $ty
-     $ts
-     """.trimIndent()
-                magneticFieldList!!.add("$tx,$ty,$ts")
-                Log.d("Magnetic", "$tx,$ty,$ts")
-
-                //Put to AVG list if a minute have passed
-                if (formatter.format(oldTime[3]) != formatter.format(localTime)) {
-                    oldTime[3] = localTime
-                    magneticFieldListAVG!!.add(createAVGSample(tempMFList))
-                    tempMFList.clear()
-                } else {
-                    tempMFList.add("$tx,$ty,$ts")
-                }
-            }
+            magneticField?.setSensorListener(formatter, oldTime)
         }
         if (sensorManager!!.getDefaultSensor(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR) != null) {
-            geoMagneticRotationVector!!.setListener { timestamp: Long, tx: Float, ty: Float, ts: Float ->
-                // acceleratorText.setText(tx + "\n" + ty + "\n" + ts);
-                gmrvList!!.add("$tx,$ty,$ts")
-                Log.d("GeoMagneticRotation", "$tx,$ty,$ts")
-
-                //Put to AVG list if a minute have passed
-                if (formatter.format(oldTime[4]) != formatter.format(localTime)) {
-                    oldTime[4] = localTime
-                    gmrvListAVG!!.add(createAVGSample(tempGMRVList))
-                    tempGMRVList.clear()
-                } else {
-                    tempGMRVList.add("$tx,$ty,$ts")
-                }
-            }
+            geoMagneticRotationVector?.setSensorListener(formatter, oldTime)
         }
         accelerometer!!.register()
         gyroscope!!.register()
@@ -444,16 +341,17 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         // Get the max length (This will be the size of all the lists
         val listLengths = ArrayList(
             Arrays.asList(
-                accelerometerList!!.size, gyroList!!.size, gravityList!!.size,
-                magneticFieldList!!.size, gmrvList!!.size
+                accelerometer?.sensorListAVG!!.size, gyroscope?.sensorListAVG!!.size,
+                gravity?.sensorListAVG!!.size, magneticField?.sensorListAVG!!.size,
+                geoMagneticRotationVector?.sensorListAVG!!.size
             )
         )
         val maxLength = Collections.max(listLengths)
-        accelerometerList!!.equalizeSensorList(maxLength, "")
-        gyroList!!.equalizeSensorList(maxLength, "")
-        gravityList!!.equalizeSensorList(maxLength, "")
-        magneticFieldList!!.equalizeSensorList(maxLength, "")
-        gmrvList!!.equalizeSensorList(maxLength, "")
+        accelerometer?.sensorListAVG!!.equalizeSensorList(maxLength, "")
+        gyroscope?.sensorListAVG!!.equalizeSensorList(maxLength, "")
+        gravity?.sensorListAVG!!.equalizeSensorList(maxLength, "")
+        magneticField?.sensorListAVG!!.equalizeSensorList(maxLength, "")
+        geoMagneticRotationVector?.sensorListAVG!!.equalizeSensorList(maxLength, "")
         timeList!!.equalizeSensorList(maxLength, "-")
     }
 
@@ -464,8 +362,9 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
         // Creating combinedList
         val combinedList = combineSensorLists(
-            accelerometerList!!, gyroList!!,
-            gravityList!!, magneticFieldList!!, gmrvList!!, timeList!!,
+            accelerometer?.sensorList!!, gyroscope?.sensorList!!,
+            gravity?.sensorList!!, magneticField?.sensorList!!,
+            geoMagneticRotationVector?.sensorList!!, timeList!!,
             accelerometer!!.timesTamp.toString(), selectedMode!!
         )
 
