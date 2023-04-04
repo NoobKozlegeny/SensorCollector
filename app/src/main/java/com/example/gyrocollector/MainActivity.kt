@@ -20,6 +20,7 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     var testText: TextView? = null
@@ -38,18 +39,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     var gravity: Gravity? = null
     var magneticField: MagneticField? = null
     var geoMagneticRotationVector: GeoMagneticRotationVector? = null
-    var accelerometerList: ArrayList<String>? = null
-    var gyroList: ArrayList<String>? = null
-    var gravityList: ArrayList<String>? = null
-    var magneticFieldList: ArrayList<String>? = null
-    var gmrvList: ArrayList<String>? = null
     var timeList: ArrayList<String>? = null
-    var accelerometerListAVG: ArrayList<String>? = null
-    var gyroListAVG: ArrayList<String>? = null
-    var gravityListAVG: ArrayList<String>? = null
-    var magneticFieldListAVG: ArrayList<String>? = null
-    var gmrvListAVG: ArrayList<String>? = null
-    var timeListAVG: ArrayList<String>? = null
 
     //Interpreter tflite;
     var tfLiteModel: TfLiteModel? = null
@@ -69,18 +59,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         gravity = Gravity(this, sensorManager)
         magneticField = MagneticField(this, sensorManager)
         geoMagneticRotationVector = GeoMagneticRotationVector(this, sensorManager)
-        accelerometerList = ArrayList()
-        gyroList = ArrayList()
-        gravityList = ArrayList()
-        magneticFieldList = ArrayList()
-        gmrvList = ArrayList()
         timeList = ArrayList()
-        accelerometerListAVG = ArrayList()
-        gyroListAVG = ArrayList()
-        gravityListAVG = ArrayList()
-        magneticFieldListAVG = ArrayList()
-        gmrvListAVG = ArrayList()
-        timeListAVG = ArrayList()
 
         // Initializng interpreter
         tfLiteModel = TfLiteModel(this)
@@ -169,13 +148,11 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     //Replaces empty string ("") to default lines ("0,0,0") in ArrayLists
     fun replaceEmptyData() {
-        accelerometerListAVG!!.convertEmptyDataToDefault()
-        gyroListAVG!!.convertEmptyDataToDefault()
-        gravityListAVG!!.convertEmptyDataToDefault()
-        magneticFieldListAVG!!.convertEmptyDataToDefault()
-        gmrvListAVG!!.convertEmptyDataToDefault()
-        timeListAVG!!.convertEmptyDataToDefault()
-
+        accelerometer?.sensorListAVG!!.convertEmptyDataToDefault()
+        gyroscope?.sensorListAVG!!.convertEmptyDataToDefault()
+        gravity?.sensorListAVG!!.convertEmptyDataToDefault()
+        magneticField?.sensorListAVG!!.convertEmptyDataToDefault()
+        geoMagneticRotationVector?.sensorListAVG!!.convertEmptyDataToDefault()
     }
 
     //This will make a prediction
@@ -224,11 +201,8 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     //Stops data gathering by clicking on the stop gathering button
     fun bt_gatherStopOnClick(v: View?) {
-        // Delete the last 50 lines of data bc we had to stop it manually
         onPause()
         createFile("ALL")
-        //        createFile("ACCELEROMETER");
-//        createFile("GYROSCOPE");
     }
 
     //Initialises sensors and starts gathering
@@ -262,27 +236,6 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         geoMagneticRotationVector!!.register()
     }
 
-    fun createAVGSample(tempList: ArrayList<String>): String {
-        var avgSample = ""
-        if (tempList.size != 0) {
-            var sensor_X = 0f
-            var sensor_Y = 0f
-            var sensor_Z = 0f
-            for (item in tempList) {
-                val sensorValues =
-                    item.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                sensor_X += sensorValues[0].toFloat()
-                sensor_Y += sensorValues[1].toFloat()
-                sensor_Z += sensorValues[2].toFloat()
-            }
-            sensor_X /= tempList.size.toFloat()
-            sensor_Y /= tempList.size.toFloat()
-            sensor_Z /= tempList.size.toFloat()
-            avgSample = "$sensor_X,$sensor_Y,$sensor_Z"
-        }
-        return avgSample
-    }
-
     //Clears List
     fun bt_clearAxisListOnClick(v: View?) {
         accelerometer!!.sensorList.clear()
@@ -290,11 +243,6 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         gravity!!.sensorList.clear()
         magneticField!!.sensorList.clear()
         geoMagneticRotationVector!!.sensorList.clear()
-        accelerometerList!!.clear()
-        gyroList!!.clear()
-        gravityList!!.clear()
-        magneticFieldList!!.clear()
-        gmrvList!!.clear()
     }
 
     //Stops the sensor's data gathering

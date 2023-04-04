@@ -5,15 +5,11 @@ package com.example.gyrocollector.helpers
 import android.content.Context
 import android.content.Intent
 import android.content.res.AssetFileDescriptor
-import android.util.Log
-import com.example.gyrocollector.sensors.BaseSensor
 import java.io.FileInputStream
 import java.io.IOException
 import java.nio.MappedByteBuffer
 import java.nio.channels.FileChannel
 import java.time.LocalDate
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 
