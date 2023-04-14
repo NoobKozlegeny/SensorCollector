@@ -28,6 +28,9 @@ public abstract class BaseSensor {
     public ArrayList<String> sensorList;
     public ArrayList<String> sensorListAVG;
 
+    protected long lastUpdate = 0;
+    protected int delay = 1; //1 and 100 didn't cause any changes in sampling ratexssssssssss
+
     protected void Setup(Context context, SensorManager sensorManager, Sensor sensor, SensorEventListener sensorEventListener) {
         this.context = context;
         this.sensorManager = sensorManager;

@@ -30,23 +30,15 @@ public class Gravity extends BaseSensor{
                 // check if listener is different from null
                 //sensorEvent.timestamp; This should go on the front of the file
                 if (listener != null) {
-                    // !(MainActivity.hasGyro.equals(false) && MainActivity.hasAccelero.equals(true))
-                    if (!(!MainActivity.hasAccelero
-                            && !MainActivity.hasMagnetic
-                            && !MainActivity.hasGeoMagneticRotation
-                            && MainActivity.hasGravity
-                            && !MainActivity.hasGyro)) {
-                        MainActivity.hasAccelero = false;
-                        MainActivity.hasMagnetic = false;
-                        MainActivity.hasGeoMagneticRotation = false;
-                        MainActivity.hasGravity = true;
-                        MainActivity.hasGyro = false;
-
+                    long currentTime = System.currentTimeMillis();
+                    if ((currentTime - lastUpdate) > delay) {
                         timesTamp = sensorEvent.timestamp;
                         sensorList.add(sensorEvent.values[0] + "," + sensorEvent.values[1] + "," + sensorEvent.values[2]);
 
                         // pass the three floats in listener on rotation of axis
                         listener.onTranslation(sensorEvent.timestamp, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
+
+                        lastUpdate = currentTime;
                     }
                 }
             }
