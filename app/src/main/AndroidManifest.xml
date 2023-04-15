@@ -15,6 +15,7 @@
         android:theme="@style/Theme.GyroCollector">
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,7 +23,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-<!--        <service android:name=".ForeGroundService"/>-->
+
+<!--        <service android:name=".helpers.BackgroundService"/>-->
     </application>
 
 </manifest>
