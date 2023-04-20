@@ -1,16 +1,22 @@
 package com.example.gyrocollector.sensors;
 
+import static com.example.gyrocollector.helpers.Helpers.createAVGSample;
+
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.net.Uri;
+import android.util.Log;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 
 public abstract class BaseSensor {
     protected Context context;
@@ -20,6 +26,10 @@ public abstract class BaseSensor {
 
     public Long timesTamp;
     public ArrayList<String> sensorList;
+    public ArrayList<String> sensorListAVG;
+
+    protected long lastUpdate = 0;
+    protected int delay = 1; //1 and 100 didn't cause any changes in sampling ratexssssssssss
 
     protected void Setup(Context context, SensorManager sensorManager, Sensor sensor, SensorEventListener sensorEventListener) {
         this.context = context;
@@ -82,5 +92,48 @@ public abstract class BaseSensor {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void setSensorListener(DateTimeFormatter formatter, LocalTime oldTime) {
+        ArrayList<String> tempSensorList = new ArrayList<>();
+        AtomicReference<LocalTime> oldTimeAtomic = new AtomicReference<>(oldTime);
+
+        setListener((timestamp, tx, ty, ts) -> {
+            //sensorList.add(tx + "," + ty + "," + ts);
+            tempSensorList.add(tx + "," + ty + "," + ts);
+            Log.d("Gyro", tx + "," + ty + "," + ts);
+
+            LocalTime localTime = LocalTime.now();
+
+            //Put to AVG list if a minute have passed
+            if (!formatter.format(oldTimeAtomic.get()).equals(formatter.format(localTime))) {
+                oldTimeAtomic.set(localTime);
+
+                sensorListAVG.add(createAVGSample(tempSensorList));
+                tempSensorList.clear();
+            }
+        });
+    }
+
+    public void setSensorListener(ArrayList<String> timeList, DateTimeFormatter formatter, LocalTime oldTime) {
+        ArrayList<String> tempSensorList = new ArrayList<>();
+        AtomicReference<LocalTime> oldTimeAtomic = new AtomicReference<>(oldTime);
+
+        setListener((timestamp, tx, ty, ts) -> {
+            //sensorList.add(tx + "," + ty + "," + ts);
+            tempSensorList.add(tx + "," + ty + "," + ts);
+            Log.d("Gyro", tx + "," + ty + "," + ts);
+
+            LocalTime localTime = LocalTime.now();
+            timeList.add(formatter.format(localTime));
+
+            //Put to AVG list if a minute have passed
+            if (!formatter.format(oldTimeAtomic.get()).equals(formatter.format(localTime))) {
+                oldTimeAtomic.set(localTime);
+
+                sensorListAVG.add(createAVGSample(tempSensorList));
+                tempSensorList.clear();
+            }
+        });
     }
 }

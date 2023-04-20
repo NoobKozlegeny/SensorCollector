@@ -20,6 +20,7 @@ public class Gravity extends BaseSensor{
         this.sensorManager = sensorManager;
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
         sensorList = new ArrayList<>();
+        sensorListAVG = new ArrayList<>();
 
         //Initializing the sensorEventListener
         sensorEventListener = new SensorEventListener() {
@@ -29,23 +30,15 @@ public class Gravity extends BaseSensor{
                 // check if listener is different from null
                 //sensorEvent.timestamp; This should go on the front of the file
                 if (listener != null) {
-                    // !(MainActivity.hasGyro.equals(false) && MainActivity.hasAccelero.equals(true))
-                    if (!(MainActivity.hasAccelero.equals(false)
-                            && MainActivity.hasMagnetic.equals(false)
-                            && MainActivity.hasGeoMagneticRotation.equals(false)
-                            && MainActivity.hasGravity.equals(true)
-                            && MainActivity.hasGyro.equals(false))) {
-                        MainActivity.hasAccelero = false;
-                        MainActivity.hasMagnetic = false;
-                        MainActivity.hasGeoMagneticRotation = false;
-                        MainActivity.hasGravity = true;
-                        MainActivity.hasGyro = false;
-
+                    long currentTime = System.currentTimeMillis();
+                    if ((currentTime - lastUpdate) > delay) {
                         timesTamp = sensorEvent.timestamp;
                         sensorList.add(sensorEvent.values[0] + "," + sensorEvent.values[1] + "," + sensorEvent.values[2]);
 
                         // pass the three floats in listener on rotation of axis
                         listener.onTranslation(sensorEvent.timestamp, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
+
+                        lastUpdate = currentTime;
                     }
                 }
             }

@@ -20,6 +20,7 @@ public class Gyroscope extends BaseSensor{
         this.sensorManager = sensorManager;
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         sensorList = new ArrayList<>();
+        sensorListAVG = new ArrayList<>();
 
         //Initializing the sensorEventListener
         sensorEventListener = new SensorEventListener() {
@@ -29,23 +30,15 @@ public class Gyroscope extends BaseSensor{
                 // check if listener is different from null
                 //sensorEvent.timestamp; This should go on the front of the file
                 if (listener != null) {
-                    // !(MainActivity.hasGyro.equals(true) && MainActivity.hasAccelero.equals(false)
-                    if (!(MainActivity.hasAccelero.equals(false)
-                            && MainActivity.hasMagnetic.equals(false)
-                            && MainActivity.hasGeoMagneticRotation.equals(false)
-                            && MainActivity.hasGravity.equals(false)
-                            && MainActivity.hasGyro.equals(true))) {
-                        MainActivity.hasAccelero = false;
-                        MainActivity.hasMagnetic = false;
-                        MainActivity.hasGeoMagneticRotation = false;
-                        MainActivity.hasGravity = false;
-                        MainActivity.hasGyro = true;
-
+                    long currentTime = System.currentTimeMillis();
+                    if ((currentTime - lastUpdate) > delay) {
                         timesTamp = sensorEvent.timestamp;
                         sensorList.add(sensorEvent.values[0] + "," + sensorEvent.values[1] + "," + sensorEvent.values[2]);
 
                         // pass the three floats in listener on rotation of axis
                         listener.onTranslation(sensorEvent.timestamp, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
+
+                        lastUpdate = currentTime;
                     }
                 }
             }

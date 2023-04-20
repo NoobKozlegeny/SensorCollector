@@ -58,13 +58,34 @@ fun combineSensorLists(accelerometerList: ArrayList<String>, gyroList: ArrayList
 
     // Removing the last X lines from combinedList
     i = combinedList.size - 1
-    val newLength = ((combinedList.size - 1 - 20) * 0.98).toInt()
+    val newLength = ((combinedList.size - 1 - 64)).toInt()
     while (i > newLength) {
         combinedList.removeAt(i)
         i--
     }
 
     return combinedList;
+}
+
+fun createAVGSample(tempList: ArrayList<String>): String {
+    var avgSample = ""
+    if (tempList.size != 0) {
+        var sensor_X = 0f
+        var sensor_Y = 0f
+        var sensor_Z = 0f
+        for (item in tempList) {
+            val sensorValues =
+                item.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            sensor_X += sensorValues[0].toFloat()
+            sensor_Y += sensorValues[1].toFloat()
+            sensor_Z += sensorValues[2].toFloat()
+        }
+        sensor_X /= tempList.size.toFloat()
+        sensor_Y /= tempList.size.toFloat()
+        sensor_Z /= tempList.size.toFloat()
+        avgSample = "$sensor_X,$sensor_Y,$sensor_Z"
+    }
+    return avgSample
 }
 
 //Memory-map the modei file in Assets
