@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         magneticFieldText = findViewById(R.id.magneticFieldData)
         predictionText = findViewById(R.id.tv_predictionData)
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
-        selectedMode = "Slow"
+        selectedMode = "False"
         gyroscope = Gyroscope(this, sensorManager)
         accelerometer = Accelerometer(this, sensorManager)
         gravity = Gravity(this, sensorManager)
@@ -137,7 +137,12 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             startGathering()
             //Starts timers
             dataGatheringTimer!!.schedule(dataGatheringTask, minutes)
-            predictTimer!!.schedule(predictTask, 60000, 60000) //Periodically runs every minute
+            if (selectedMode.equals("True")) {
+                predictTimer!!.schedule(predictTask, 60000, 60000) //Periodically runs every minute
+            }
+            else {
+                predictionText!!.text = "Not doing prediction"
+            }
         } else {
             //Sleeps for a bit to properly prepare for the data session
             Thread.sleep(5000)
