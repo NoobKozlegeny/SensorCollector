@@ -2,8 +2,8 @@
     <string name="app_name">GyroCollector</string>
 
     <string-array name="dropDownMenuModes">
-        <item>Slow</item>
-        <item>Normal</item>
+        <item>False</item>
+        <item>True</item>
         <item>Fast</item>
     </string-array>
 </resources>
