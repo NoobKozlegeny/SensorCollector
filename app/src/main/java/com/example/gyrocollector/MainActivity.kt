@@ -321,7 +321,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             accelerometer?.sensorList!!, gyroscope?.sensorList!!,
             gravity?.sensorList!!, magneticField?.sensorList!!,
             geoMagneticRotationVector?.sensorList!!, timeList!!,
-            accelerometer!!.timesTamp.toString(), selectedMode!!
+            accelerometer!!.timesTamp.toString()
         )
 
         // Exporting the combinedList to a CSV file

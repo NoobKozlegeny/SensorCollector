@@ -31,7 +31,7 @@ fun createIntent(name: String, selectedMode: String): Intent {
 fun combineSensorLists(accelerometerList: ArrayList<String>, gyroList: ArrayList<String>,
                        gravityList: ArrayList<String>, magneticFieldList: ArrayList<String>,
                        gmrvList: ArrayList<String>, timeList: ArrayList<String>,
-                       timestamp: String, selectedMode: String): ArrayList<String> {
+                       timestamp: String): ArrayList<String> {
     val combinedList = ArrayList<String>()
 
     // Adding the header lines to the combinedList
@@ -43,7 +43,7 @@ fun combineSensorLists(accelerometerList: ArrayList<String>, gyroList: ArrayList
     combinedList.add(
         accelerometerList.get(i) + "," + gyroList.get(i)
                 + "," + gravityList.get(i) + "," + magneticFieldList.get(i)
-                + "," + gmrvList.get(i) + "," + timeList.get(i) + "," + selectedMode
+                + "," + gmrvList.get(i) + "," + timeList.get(i) + "," + "Slow"
     )
     i++
 
@@ -51,7 +51,7 @@ fun combineSensorLists(accelerometerList: ArrayList<String>, gyroList: ArrayList
     while (i < accelerometerList.size && i < gyroList.size && i < gravityList.size
         && i < magneticFieldList.size && i < gmrvList.size
     ) {
-        val lineToAdd: String = accelerometerList.get(i) + "," + gyroList.get(i) + "," + gravityList.get(i) + "," + magneticFieldList.get(i) + "," + gmrvList.get(i) + "," + timeList.get(i) + "," + selectedMode
+        val lineToAdd: String = accelerometerList.get(i) + "," + gyroList.get(i) + "," + gravityList.get(i) + "," + magneticFieldList.get(i) + "," + gmrvList.get(i) + "," + timeList.get(i) + "," + "Slow"
         combinedList.add(lineToAdd)
         i++
     }
