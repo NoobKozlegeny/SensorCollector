@@ -56,6 +56,15 @@ fun combineSensorLists(accelerometerList: ArrayList<String>, gyroList: ArrayList
         i++
     }
 
+    // Printing out the other datas, because magneticField fricks everything up
+    while (i < accelerometerList.size && i < gyroList.size && i < gravityList.size
+        && i < gmrvList.size
+    ) {
+        val lineToAdd: String = accelerometerList.get(i) + "," + gyroList.get(i) + "," + gravityList.get(i) + "," + "-,-,-" + "," + gmrvList.get(i) + "," + timeList.get(i) + "," + "Slow"
+        combinedList.add(lineToAdd)
+        i++
+    }
+
     // Removing the last X lines from combinedList
     i = combinedList.size - 1
     val newLength = ((combinedList.size - 1 - 64)).toInt()
