@@ -22,33 +22,19 @@ import java.nio.channels.FileChannel;
 public class TfLiteModel {
 
     private final Context ctx;
-    public InterpreterApi interpreter;
+    public Interpreter interpreter;
 
     public TfLiteModel(Context ctx) {
         this.ctx = ctx;
     }
 
     public void initialize() {
-        Task<Void> initializeTask = TfLite.initialize(ctx);
-        initializeTask.addOnSuccessListener(a -> {
-            try {
-                DelegateFactory delegateFactory = new DelegateFactory() {
-                    @Override
-                    public Delegate create(RuntimeFlavor runtimeFlavor) {
-                        return new FlexDelegate();
-                    }
-                };
-                InterpreterApi.Options options = new Interpreter.Options()
-                        .setRuntime(InterpreterApi.Options.TfLiteRuntime.FROM_SYSTEM_ONLY)
-                        .addDelegateFactory(delegateFactory);
-                interpreter = InterpreterApi.create(loadModelFile(), options);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }).addOnFailureListener(e -> {
+        try {
+            interpreter = new Interpreter(loadModelFile());
+        } catch (IOException e) {
             Log.e("Interpreter", String.format("Cannot initialize interpreter: %s",
                     e.getMessage()));
-        });
+        }
     }
 
     //Memory-map the modei file in Assets
