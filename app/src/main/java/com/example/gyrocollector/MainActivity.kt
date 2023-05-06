@@ -109,7 +109,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
                         //Kills the currently running prediction task
                         predictTimer!!.purge()
                         onPause()
-                        createFile("ALL")
+                        createFile()
                     }
                 }
             }
@@ -211,7 +211,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     //Stops data gathering by clicking on the stop gathering button
     fun bt_gatherStopOnClick(v: View?) {
         onPause()
-        createFile("ALL")
+        createFile()
     }
 
     //Initialises sensors and starts gathering
@@ -270,15 +270,9 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     }
 
     //Saves data to CSV file
-    private fun createFile(name: String) {
-        val intent = createIntent(name, selectedMode!!)
-        if (name == "ACCELEROMETER") {
-            startActivityForResult(intent, CREATE_FILE_ACCELERO)
-        } else if (name == "GYROSCOPE") {
-            startActivityForResult(intent, CREATE_FILE_GYRO)
-        } else {
-            startActivityForResult(intent, CREATE_FILE_ALL)
-        }
+    private fun createFile() {
+        val intent = createIntent()
+        startActivityForResult(intent, CREATE_FILE)
     }
 
     //This activity will call the methods which will save the datas to a CSV
@@ -288,13 +282,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     ) {
         super.onActivityResult(requestCode, resultCode, resultData)
         if (resultCode == RESULT_OK) {
-            if (requestCode == 1) {
-                accelerometer!!.ExportToCSV(resultData)
-            } else if (requestCode == 2) {
-                gyroscope!!.ExportToCSV(resultData)
-            } else {
-                exportAllToOneCSV(resultData)
-            }
+            exportAllToOneCSV(resultData)
         }
     }
 
@@ -355,18 +343,6 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     override fun onNothingSelected(adapterView: AdapterView<*>?) {}
 
     companion object {
-        const val CREATE_FILE_ACCELERO = 1
-        const val CREATE_FILE_GYRO = 2
-        const val CREATE_FILE_ALL = 3
-        @JvmField
-        var hasGyro = false
-        @JvmField
-        var hasAccelero = false
-        @JvmField
-        var hasGravity = false
-        @JvmField
-        var hasMagnetic = false
-        @JvmField
-        var hasGeoMagneticRotation = false
+        const val CREATE_FILE = 1
     }
 }
