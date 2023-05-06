@@ -5,14 +5,14 @@ import android.content.res.AssetFileDescriptor;
 import android.util.Log;
 
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tflite.java.TfLite;
+//import com.google.android.gms.tflite.java.TfLite;
 
-import org.tensorflow.lite.Delegate;
-import org.tensorflow.lite.DelegateFactory;
+//import org.tensorflow.lite.Delegate;
+//import org.tensorflow.lite.DelegateFactory;
 import org.tensorflow.lite.Interpreter;
-import org.tensorflow.lite.InterpreterApi;
-import org.tensorflow.lite.RuntimeFlavor;
-import org.tensorflow.lite.flex.FlexDelegate;
+//import org.tensorflow.lite.InterpreterApi;
+//import org.tensorflow.lite.RuntimeFlavor;
+//import org.tensorflow.lite.flex.FlexDelegate;
 
 import java.io.FileInputStream;
 import java.io.IOException;
