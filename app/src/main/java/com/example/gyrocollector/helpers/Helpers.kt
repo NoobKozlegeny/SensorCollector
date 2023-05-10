@@ -14,11 +14,11 @@ import java.util.*
 
 
 //Saves data to CSV file
-fun createIntent(name: String, selectedMode: String): Intent {
+fun createIntent(): Intent {
     val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
     intent.addCategory(Intent.CATEGORY_OPENABLE)
     intent.type = "text/csv"
-    val fileName = selectedMode + name + LocalDate.now().toString().split("-".toRegex())
+    val fileName = "SENSOR_DATA" + LocalDate.now().toString().split("-".toRegex())
         .dropLastWhile { it.isEmpty() }
         .toTypedArray()[1] +LocalDate.now().toString().split("-".toRegex()).dropLastWhile { it.isEmpty() }
         .toTypedArray()[2] + ".csv"
