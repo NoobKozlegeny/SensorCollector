@@ -4,7 +4,6 @@ import android.content.Intent
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.view.animation.Animation
@@ -17,14 +16,13 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.gyrocollector.databinding.ActivityMainBinding
 import com.example.gyrocollector.helpers.*
 import com.example.gyrocollector.sensors.*
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.io.IOException
 import java.nio.charset.StandardCharsets
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
-import android.widget.Toast
+import com.example.gyrocollector.animations.FloatBtnOptions
 
 
 class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
@@ -49,11 +47,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     //Interpreter tflite;
     var tfLiteModel: TfLiteModel? = null
 
-    // Animation
-    private val fromBottom: Animation by lazy { AnimationUtils.loadAnimation(this, R.anim.from_bottom_anim) }
-    private val toBottom: Animation by lazy { AnimationUtils.loadAnimation(this, R.anim.to_bottom_anim) }
-    private var clicked: Boolean = false
-
+    // Needed for view binding
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,7 +57,8 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
         // Animation
         binding.floatBtnListOptions.setOnClickListener {
-            onListOptionsClicked()
+            val floatBtnOptions: FloatBtnOptions = FloatBtnOptions(this, binding)
+            floatBtnOptions.onListOptionsClicked()
         }
 
         testText = findViewById(R.id.test)
@@ -98,55 +93,6 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
         // Keeps the screen on
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-    }
-
-    private fun onListOptionsClicked() {
-        Log.d("clicked", clicked.toString())
-        setVisibility(clicked)
-        setAnimation(clicked)
-        setClickable(clicked)
-    }
-
-    private fun setVisibility(clicked: Boolean) {
-        if (!clicked) {
-            binding.floatBtnStartGathering.visibility = View.VISIBLE
-            binding.floatBtnClearData.visibility = View.VISIBLE
-            binding.floatBtnSaveData.visibility = View.VISIBLE
-        }
-        else {
-            binding.floatBtnStartGathering.visibility = View.INVISIBLE
-            binding.floatBtnClearData.visibility = View.INVISIBLE
-            binding.floatBtnSaveData.visibility = View.INVISIBLE
-        }
-    }
-
-    private fun setAnimation(clicked: Boolean) {
-        if (!clicked) {
-            binding.floatBtnStartGathering.startAnimation(fromBottom)
-            binding.floatBtnClearData.startAnimation(fromBottom)
-            binding.floatBtnSaveData.startAnimation(fromBottom)
-            this@MainActivity.clicked = true
-        }
-        else {
-            binding.floatBtnStartGathering.startAnimation(toBottom)
-            binding.floatBtnClearData.startAnimation(toBottom)
-            binding.floatBtnSaveData.startAnimation(toBottom)
-            this@MainActivity.clicked = false
-        }
-    }
-
-    private fun setClickable(clicked: Boolean) {
-        Log.d("clicked", clicked.toString())
-        if (!clicked) {
-            binding.floatBtnStartGathering.isClickable = false
-            binding.floatBtnClearData.isClickable = false
-            binding.floatBtnSaveData.isClickable = false
-        }
-        else {
-            binding.floatBtnStartGathering.isClickable = true
-            binding.floatBtnClearData.isClickable = true
-            binding.floatBtnSaveData.isClickable = true
-        }
     }
 
     //Starts the data gathering for X minutes
