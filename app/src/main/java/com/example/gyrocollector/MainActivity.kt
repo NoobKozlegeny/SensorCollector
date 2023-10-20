@@ -1,5 +1,6 @@
 package com.example.gyrocollector
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.hardware.Sensor
 import android.hardware.SensorManager
@@ -12,6 +13,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.gyrocollector.databinding.ActivityMainBinding
 import com.example.gyrocollector.helpers.*
@@ -24,14 +26,8 @@ import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 import com.example.gyrocollector.animations.FloatBtnOptions
 
-
+@SuppressLint("SetTextI18n")
 class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
-    var testText: TextView? = null
-    var acceleratorText: TextView? = null
-    var gyroText: TextView? = null
-    var gravityText: TextView? = null
-    var magneticFieldText: TextView? = null
-    var predictionText: TextView? = null
     var dataGatheringTimer: Timer? = null
     var predictTimer: Timer? = null
     var localTime: LocalTime? = null
@@ -61,12 +57,6 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             floatBtnOptions.onListOptionsClicked()
         }
 
-        testText = findViewById(R.id.test)
-        acceleratorText = findViewById(R.id.acceleroData)
-        gyroText = findViewById(R.id.gyroData)
-        gravityText = findViewById(R.id.gravityData)
-        magneticFieldText = findViewById(R.id.magneticFieldData)
-        predictionText = findViewById(R.id.tv_predictionData)
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         selectedMode = "False"
         gyroscope = Gyroscope(this, sensorManager)
@@ -135,14 +125,13 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
                         //Increase the fromMinute so next time we won't predict on the same data again
                         fromMinute.addAndGet(1)
                         //Display the prediction result onto the predictionData text
-                        val newLine = System.getProperty("line.separator")
-                        predictionText!!.text = java.lang.String.join(
-                            newLine,
-                            "Confidence results:",
-                            "0 (Slow): " + predictions[0],
-                            "1 (Normal): " + predictions[1],
-                            "2 (Fast): " + predictions[2]
-                        )
+                        val slowResult: Float = predictions[0]
+                        val fastResult: Float = predictions[1]
+                        binding.tvPredictionData.text = """
+                            Prediction results:
+                               0 (Slow | Normal): $slowResult
+                                        1 (Fast): $fastResult
+                        """.trimIndent()
                     }
                 }
             }
@@ -156,7 +145,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
                 predictTimer!!.schedule(predictTask, 60000, 60000) //Periodically runs every minute
             }
             else {
-                predictionText!!.text = "Not doing prediction"
+                binding.doesPredict.text = "Not doing prediction"
             }
         } else {
             //Sleeps for a bit to properly prepare for the data session
@@ -234,20 +223,20 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         // These are for the average lists
         val oldTime = LocalTime.now()
         if (sensorManager!!.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION) != null) {
-            acceleratorText?.setText("Collecting data ^^")
+            binding.acceleroData.text = "Collecting data ^^"
             accelerometer?.setSensorListener(timeList, formatter, oldTime)
             // setSensorListener(accelerometer, accelerometerList, timeList, formatter, oldTime, accelerometerListAVG, tempAcceleratorList)
         }
         if (sensorManager!!.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null) {
-            gyroText?.setText("Collecting data ^^")
+            binding.gyroData.text = "Collecting data ^^"
             gyroscope?.setSensorListener(formatter, oldTime)
         }
         if (sensorManager!!.getDefaultSensor(Sensor.TYPE_GRAVITY) != null) {
-            gravityText?.setText("Collecting data ^^")
+            binding.gravityData.text = "Collecting data ^^"
             gravity?.setSensorListener(formatter, oldTime)
         }
         if (sensorManager!!.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) != null) {
-            magneticFieldText?.setText("Collecting data ^^")
+            binding.magneticFieldData.text = "Collecting data ^^"
             magneticField?.setSensorListener(formatter, oldTime)
         }
         if (sensorManager!!.getDefaultSensor(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR) != null) {
@@ -277,7 +266,6 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         gravity!!.unRegister()
         magneticField!!.unRegister()
         geoMagneticRotationVector!!.unRegister()
-        testText!!.text = "Finished data gathering"
     }
 
     //Saves data to CSV file
