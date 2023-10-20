@@ -1,12 +1,13 @@
 package com.example.gyrocollector
 
 import android.content.Intent
-import android.content.res.AssetFileDescriptor
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
@@ -14,11 +15,8 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.gyrocollector.helpers.*
 import com.example.gyrocollector.sensors.*
-import org.tensorflow.lite.Interpreter
-import java.io.FileInputStream
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.io.IOException
-import java.nio.MappedByteBuffer
-import java.nio.channels.FileChannel
 import java.nio.charset.StandardCharsets
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -47,9 +45,22 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     //Interpreter tflite;
     var tfLiteModel: TfLiteModel? = null
+
+    // Animation
+    private val fromBottom: Animation by lazy { AnimationUtils.loadAnimation(this, R.anim.from_bottom_anim) }
+    private val toBottom: Animation by lazy { AnimationUtils.loadAnimation(this, R.anim.to_bottom_anim) }
+    private var clicked: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // Animation
+        var listOptions = findViewById<FloatingActionButton>(R.id.floatBtn_listOptions)
+        listOptions.setOnClickListener {
+            onListOptionsClicked()
+        }
+
         testText = findViewById(R.id.test)
         acceleratorText = findViewById(R.id.acceleroData)
         gyroText = findViewById(R.id.gyroData)
@@ -82,6 +93,52 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
         // Keeps the screen on
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    }
+
+    private fun onListOptionsClicked() {
+        clicked = !clicked
+        setVisibility(clicked)
+        setAnimation(clicked)
+        setClickable(clicked)
+    }
+
+    private fun setVisibility(clicked: Boolean) {
+        if (!clicked) {
+            findViewById<FloatingActionButton>(R.id.floatBtn_startGathering).visibility = View.VISIBLE
+            findViewById<FloatingActionButton>(R.id.floatBtn_clearData).visibility = View.VISIBLE
+            findViewById<FloatingActionButton>(R.id.floatBtn_saveData).visibility = View.VISIBLE
+        }
+        else {
+            findViewById<FloatingActionButton>(R.id.floatBtn_startGathering).visibility = View.INVISIBLE
+            findViewById<FloatingActionButton>(R.id.floatBtn_clearData).visibility = View.INVISIBLE
+            findViewById<FloatingActionButton>(R.id.floatBtn_saveData).visibility = View.INVISIBLE
+        }
+    }
+
+    private fun setAnimation(clicked: Boolean) {
+        if (!clicked) {
+            findViewById<FloatingActionButton>(R.id.floatBtn_startGathering).startAnimation(fromBottom)
+            findViewById<FloatingActionButton>(R.id.floatBtn_clearData).startAnimation(fromBottom)
+            findViewById<FloatingActionButton>(R.id.floatBtn_saveData).startAnimation(fromBottom)
+        }
+        else {
+            findViewById<FloatingActionButton>(R.id.floatBtn_startGathering).startAnimation(toBottom)
+            findViewById<FloatingActionButton>(R.id.floatBtn_clearData).startAnimation(toBottom)
+            findViewById<FloatingActionButton>(R.id.floatBtn_saveData).startAnimation(toBottom)
+        }
+    }
+
+    private fun setClickable(clicked: Boolean) {
+        if (!clicked) {
+            findViewById<FloatingActionButton>(R.id.floatBtn_startGathering).isClickable = false
+            findViewById<FloatingActionButton>(R.id.floatBtn_clearData).isClickable = false
+            findViewById<FloatingActionButton>(R.id.floatBtn_saveData).isClickable = false
+        }
+        else {
+            findViewById<FloatingActionButton>(R.id.floatBtn_startGathering).isClickable = true
+            findViewById<FloatingActionButton>(R.id.floatBtn_clearData).isClickable = true
+            findViewById<FloatingActionButton>(R.id.floatBtn_saveData).isClickable = true
+        }
     }
 
     //Starts the data gathering for X minutes
