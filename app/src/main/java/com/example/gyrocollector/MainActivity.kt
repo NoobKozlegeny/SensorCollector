@@ -4,6 +4,7 @@ import android.content.Intent
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.view.animation.Animation
@@ -13,6 +14,7 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.example.gyrocollector.databinding.ActivityMainBinding
 import com.example.gyrocollector.helpers.*
 import com.example.gyrocollector.sensors.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -22,6 +24,7 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
+import android.widget.Toast
 
 
 class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
@@ -51,13 +54,15 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     private val toBottom: Animation by lazy { AnimationUtils.loadAnimation(this, R.anim.to_bottom_anim) }
     private var clicked: Boolean = false
 
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         // Animation
-        var listOptions = findViewById<FloatingActionButton>(R.id.floatBtn_listOptions)
-        listOptions.setOnClickListener {
+        binding.floatBtnListOptions.setOnClickListener {
             onListOptionsClicked()
         }
 
@@ -96,7 +101,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     }
 
     private fun onListOptionsClicked() {
-        clicked = !clicked
+        Log.d("clicked", clicked.toString())
         setVisibility(clicked)
         setAnimation(clicked)
         setClickable(clicked)
@@ -104,40 +109,43 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     private fun setVisibility(clicked: Boolean) {
         if (!clicked) {
-            findViewById<FloatingActionButton>(R.id.floatBtn_startGathering).visibility = View.VISIBLE
-            findViewById<FloatingActionButton>(R.id.floatBtn_clearData).visibility = View.VISIBLE
-            findViewById<FloatingActionButton>(R.id.floatBtn_saveData).visibility = View.VISIBLE
+            binding.floatBtnStartGathering.visibility = View.VISIBLE
+            binding.floatBtnClearData.visibility = View.VISIBLE
+            binding.floatBtnSaveData.visibility = View.VISIBLE
         }
         else {
-            findViewById<FloatingActionButton>(R.id.floatBtn_startGathering).visibility = View.INVISIBLE
-            findViewById<FloatingActionButton>(R.id.floatBtn_clearData).visibility = View.INVISIBLE
-            findViewById<FloatingActionButton>(R.id.floatBtn_saveData).visibility = View.INVISIBLE
+            binding.floatBtnStartGathering.visibility = View.INVISIBLE
+            binding.floatBtnClearData.visibility = View.INVISIBLE
+            binding.floatBtnSaveData.visibility = View.INVISIBLE
         }
     }
 
     private fun setAnimation(clicked: Boolean) {
         if (!clicked) {
-            findViewById<FloatingActionButton>(R.id.floatBtn_startGathering).startAnimation(fromBottom)
-            findViewById<FloatingActionButton>(R.id.floatBtn_clearData).startAnimation(fromBottom)
-            findViewById<FloatingActionButton>(R.id.floatBtn_saveData).startAnimation(fromBottom)
+            binding.floatBtnStartGathering.startAnimation(fromBottom)
+            binding.floatBtnClearData.startAnimation(fromBottom)
+            binding.floatBtnSaveData.startAnimation(fromBottom)
+            this@MainActivity.clicked = true
         }
         else {
-            findViewById<FloatingActionButton>(R.id.floatBtn_startGathering).startAnimation(toBottom)
-            findViewById<FloatingActionButton>(R.id.floatBtn_clearData).startAnimation(toBottom)
-            findViewById<FloatingActionButton>(R.id.floatBtn_saveData).startAnimation(toBottom)
+            binding.floatBtnStartGathering.startAnimation(toBottom)
+            binding.floatBtnClearData.startAnimation(toBottom)
+            binding.floatBtnSaveData.startAnimation(toBottom)
+            this@MainActivity.clicked = false
         }
     }
 
     private fun setClickable(clicked: Boolean) {
+        Log.d("clicked", clicked.toString())
         if (!clicked) {
-            findViewById<FloatingActionButton>(R.id.floatBtn_startGathering).isClickable = false
-            findViewById<FloatingActionButton>(R.id.floatBtn_clearData).isClickable = false
-            findViewById<FloatingActionButton>(R.id.floatBtn_saveData).isClickable = false
+            binding.floatBtnStartGathering.isClickable = false
+            binding.floatBtnClearData.isClickable = false
+            binding.floatBtnSaveData.isClickable = false
         }
         else {
-            findViewById<FloatingActionButton>(R.id.floatBtn_startGathering).isClickable = true
-            findViewById<FloatingActionButton>(R.id.floatBtn_clearData).isClickable = true
-            findViewById<FloatingActionButton>(R.id.floatBtn_saveData).isClickable = true
+            binding.floatBtnStartGathering.isClickable = true
+            binding.floatBtnClearData.isClickable = true
+            binding.floatBtnSaveData.isClickable = true
         }
     }
 
