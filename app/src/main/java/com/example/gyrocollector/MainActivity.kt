@@ -52,8 +52,8 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         setContentView(binding.root)
 
         // Animation
+        val floatBtnOptions: FloatBtnOptions = FloatBtnOptions(this, binding)
         binding.floatBtnListOptions.setOnClickListener {
-            val floatBtnOptions: FloatBtnOptions = FloatBtnOptions(this, binding)
             floatBtnOptions.onListOptionsClicked()
         }
 
