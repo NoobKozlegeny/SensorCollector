@@ -152,6 +152,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             Thread.sleep(5000)
             //Starts the sensor's data gathering
             startGathering()
+            binding.doesPredict.text = "No time set. Not doing prediction"
         }
     }
 
@@ -223,20 +224,16 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         // These are for the average lists
         val oldTime = LocalTime.now()
         if (sensorManager!!.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION) != null) {
-            binding.acceleroData.text = "Collecting data ^^"
             accelerometer?.setSensorListener(timeList, formatter, oldTime)
             // setSensorListener(accelerometer, accelerometerList, timeList, formatter, oldTime, accelerometerListAVG, tempAcceleratorList)
         }
         if (sensorManager!!.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null) {
-            binding.gyroData.text = "Collecting data ^^"
             gyroscope?.setSensorListener(formatter, oldTime)
         }
         if (sensorManager!!.getDefaultSensor(Sensor.TYPE_GRAVITY) != null) {
-            binding.gravityData.text = "Collecting data ^^"
             gravity?.setSensorListener(formatter, oldTime)
         }
         if (sensorManager!!.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) != null) {
-            binding.magneticFieldData.text = "Collecting data ^^"
             magneticField?.setSensorListener(formatter, oldTime)
         }
         if (sensorManager!!.getDefaultSensor(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR) != null) {
@@ -247,6 +244,8 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         gravity!!.register()
         magneticField!!.register()
         geoMagneticRotationVector!!.register()
+
+        binding.gatherData.text = "Collecting sensor data..."
     }
 
     //Clears List

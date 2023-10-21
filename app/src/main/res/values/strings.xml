@@ -1,9 +1,8 @@
 <resources>
-    <string name="app_name">GyroCollector</string>
+    <string name="app_name">SensorCollector</string>
 
     <string-array name="dropDownMenuModes">
         <item>False</item>
         <item>True</item>
-        <item>Fast</item>
     </string-array>
 </resources>

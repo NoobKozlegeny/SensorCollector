@@ -6,51 +6,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#171717"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity" >
 
     <EditText
         android:id="@+id/gatherLength"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="488dp"
         android:backgroundTint="#FF00FB"
         android:ems="10"
         android:foregroundTint="#EA0000"
         android:hint="Gather data for X mins"
         android:inputType="numberSigned"
         android:minHeight="48dp"
+        android:minWidth="48dp"
         android:textColor="#EF0000"
-        app:layout_constraintBottom_toTopOf="@+id/bt_gatherStart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.963" />
-
-    <Button
-        android:id="@+id/bt_clearAxisList"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="164dp"
-        android:backgroundTint="#0088FF"
-        android:onClick="bt_clearAxisListOnClick"
-        android:text="Clear collected datas"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.494"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/bt_gatherStart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="224dp"
-        android:backgroundTint="#0088FF"
-        android:onClick="bt_gatherStartOnClick"
-        android:text="Start Gathering"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/bt_gatherStop"
@@ -58,27 +32,15 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="156dp"
         android:layout_marginEnd="161dp"
-        android:layout_marginBottom="104dp"
-        android:backgroundTint="#0088FF"
+        android:layout_marginBottom="112dp"
         android:onClick="bt_gatherStopOnClick"
         android:text="Stop Gathering"
+        android:minHeight="48dp"
+        android:minWidth="48dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.458"
+        app:layout_constraintHorizontal_bias="0.472"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/gyroData"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Gyroscope data"
-        android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.759"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.064" />
 
     <TextView
         android:id="@+id/tv_selectMode"
@@ -88,22 +50,24 @@
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.777"
+        app:layout_constraintHorizontal_bias="0.767"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.233" />
+        app:layout_constraintVertical_bias="0.23" />
 
     <TextView
-        android:id="@+id/magneticFieldData"
+        android:id="@+id/gatherData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="92dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginEnd="100dp"
+        android:layout_marginBottom="57dp"
         android:text="TextView"
         android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toTopOf="@+id/tv_selectMode"
+        app:layout_constraintBottom_toTopOf="@+id/tv_selectTFModel"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/gyroData"
-        app:layout_constraintVertical_bias="0.382" />
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Spinner
         android:id="@+id/sp_selectMode"
@@ -113,36 +77,11 @@
         android:minHeight="48dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.747"
+        app:layout_constraintHorizontal_bias="0.798"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.281"
         tools:ignore="SpeakableTextPresentCheck" />
-
-    <TextView
-        android:id="@+id/acceleroData"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Accelerometer data"
-        android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.25"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.064" />
-
-    <TextView
-        android:id="@+id/gravityData"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="100dp"
-        android:text="TextView"
-        android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toTopOf="@+id/tv_selectMode"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/acceleroData"
-        app:layout_constraintVertical_bias="0.382" />
 
     <TextView
         android:id="@+id/tv_selectTFModel"
@@ -152,10 +91,10 @@
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.247"
+        app:layout_constraintHorizontal_bias="0.202"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.233" />
+        app:layout_constraintVertical_bias="0.23" />
 
     <TextView
         android:id="@+id/tv_predictionData"
@@ -177,7 +116,7 @@
         android:minHeight="48dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.276"
+        app:layout_constraintHorizontal_bias="0.197"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.281"
@@ -187,14 +126,14 @@
         android:id="@+id/doesPredict"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="176dp"
-        android:layout_marginEnd="176dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginEnd="100dp"
         android:layout_marginBottom="44dp"
         android:text="Idling..."
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -205,6 +144,8 @@
         android:layout_marginBottom="24dp"
         android:clickable="true"
         android:focusable="true"
+        android:tooltipText="List Options"
+        android:contentDescription="List Options"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_add" />
